@@ -5,7 +5,7 @@ client-dev: ./client/node_modules
 	npm start --prefix ./client 
 
 server-dev: 
-	cd ./server && go1.18.3 run main.go 
+	cd ./server && go1.18.3 run -ldflags="-X main.env=dev" *.go 
 
 out: 
 	mkdir out
@@ -21,5 +21,5 @@ out/server: out
 
 all: out/client out/server
 
-clean: 
+clean: out
 	rm -rf ./out

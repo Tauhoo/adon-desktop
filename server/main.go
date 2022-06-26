@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -9,28 +10,38 @@ import (
 )
 
 func main() {
-	var a, _ = astilectron.New(log.New(os.Stderr, "", 0), astilectron.Options{
-		AppName: "adon",
-		// AppIconDefaultPath: "<your .png icon>",  // If path is relative, it must be relative to the data directory
-		// AppIconDarwinPath:  "<your .icns icon>", // Same here
-		BaseDirectoryPath:  "dependencies",
-		VersionAstilectron: "0.33.0",
-		VersionElectron:    "6.1.2",
+
+	config, err := NewConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("DEBUG: %#v\n", config)
+	astilectronInstance, err := astilectron.New(log.New(os.Stderr, "", 0), astilectron.Options{
+		AppName:            config.AppName,
+		AppIconDefaultPath: config.AppIconDefaultPath,
+		AppIconDarwinPath:  config.AppIconDarwinPath,
+		BaseDirectoryPath:  config.BaseDirectoryPath,
+		VersionAstilectron: config.VersionAstilectron,
+		VersionElectron:    config.VersionElectron,
 	})
-	defer a.Close()
+	defer astilectronInstance.Close()
 
 	// Start astilectron
-	a.Start()
+	astilectronInstance.Start()
 
-	w, _ := a.NewWindow("http://localhost:3000", &astilectron.WindowOptions{
+	window, err := astilectronInstance.NewWindow(config.ClientLocation, &astilectron.WindowOptions{
 		Center: astikit.BoolPtr(true),
 		Height: astikit.IntPtr(600),
 		Width:  astikit.IntPtr(600),
 	})
+	if err != nil {
+		panic(err)
+	}
 
-	w.Create()
-	defer w.Close()
+	window.Create()
+	defer window.Close()
 
 	// Blocking pattern
-	a.Wait()
+	astilectronInstance.Wait()
 }

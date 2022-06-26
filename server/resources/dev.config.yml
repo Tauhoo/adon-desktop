@@ -1,0 +1,7 @@
+client-location: "http://localhost:3000"
+app-name: "adon"
+app-icon-default-path: ""
+app-icon-darwin-path: ""
+base-directory-path: "dependencies"
+version-astilectron: "0.33.0"
+version-electron: "6.1.2"
