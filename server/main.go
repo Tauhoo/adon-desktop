@@ -1,36 +1,38 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
+	"github.com/Tauhoo/adon"
+	"github.com/Tauhoo/adon-desktop/internal/config"
+	"github.com/Tauhoo/adon-desktop/internal/routes"
+	"github.com/Tauhoo/adon-desktop/internal/services"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
 )
 
 func main() {
 
-	config, err := NewConfig()
+	conf, err := config.New()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("DEBUG: %#v\n", config)
 	astilectronInstance, err := astilectron.New(log.New(os.Stderr, "", 0), astilectron.Options{
-		AppName:            config.AppName,
-		AppIconDefaultPath: config.AppIconDefaultPath,
-		AppIconDarwinPath:  config.AppIconDarwinPath,
-		BaseDirectoryPath:  config.BaseDirectoryPath,
-		VersionAstilectron: config.VersionAstilectron,
-		VersionElectron:    config.VersionElectron,
+		AppName:            conf.AppName,
+		AppIconDefaultPath: conf.AppIconDefaultPath,
+		AppIconDarwinPath:  conf.AppIconDarwinPath,
+		BaseDirectoryPath:  conf.BaseDirectoryPath,
+		VersionAstilectron: conf.VersionAstilectron,
+		VersionElectron:    conf.VersionElectron,
 	})
 	defer astilectronInstance.Close()
 
 	// Start astilectron
 	astilectronInstance.Start()
 
-	window, err := astilectronInstance.NewWindow(config.ClientLocation, &astilectron.WindowOptions{
+	window, err := astilectronInstance.NewWindow(conf.ClientLocation, &astilectron.WindowOptions{
 		Center: astikit.BoolPtr(true),
 		Height: astikit.IntPtr(600),
 		Width:  astikit.IntPtr(600),
@@ -41,6 +43,12 @@ func main() {
 
 	window.Create()
 	defer window.Close()
+
+	job := adon.NewJob()
+	pluginManager := adon.NewPluginManager(job)
+	service := services.New(pluginManager, window)
+
+	routes.Regist(service, window)
 
 	// Blocking pattern
 	astilectronInstance.Wait()

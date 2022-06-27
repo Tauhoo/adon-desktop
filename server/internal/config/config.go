@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"os"
@@ -18,7 +18,7 @@ type Config struct {
 	VersionElectron    string `yaml:"version-electron"`
 }
 
-func NewConfigFromFile(path string) (Config, error) {
+func NewFromFile(path string) (Config, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return Config{}, err
@@ -33,13 +33,13 @@ func NewConfigFromFile(path string) (Config, error) {
 
 }
 
-func NewConfig() (Config, error) {
+func New() (Config, error) {
 	switch env {
 	case "prod":
-		return NewConfigFromFile("resources/prod.config.yml")
+		return NewFromFile("resources/prod.config.yml")
 	case "dev":
 		fallthrough
 	default:
-		return NewConfigFromFile("resources/dev.config.yml")
+		return NewFromFile("resources/dev.config.yml")
 	}
 }

@@ -1,4 +1,4 @@
-module github.com/Tauhoo/adon-desktop.git
+module github.com/Tauhoo/adon-desktop
 
 go 1.18
 
@@ -8,3 +8,5 @@ require (
 )
 
 require github.com/asticode/go-astikit v0.29.1
+
+require github.com/Tauhoo/adon v0.0.0-20220626075346-0303ca2a4ebf
