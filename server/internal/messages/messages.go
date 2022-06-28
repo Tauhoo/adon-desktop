@@ -2,21 +2,26 @@ package messages
 
 import "encoding/json"
 
+type Type = int
+
+const (
+	ERROR   Type = 0
+	SUCCESS Type = 1
+)
+
 type RouteSection struct {
 	Route string `json:"route"`
 }
 
-type Message[T any] struct {
+type RequestMessage[T any] struct {
+	Type  Type   `json:"type"`
 	Route string `json:"route"`
 	Data  T      `json:"data"`
 }
 
-func New[T any](raw []byte) (Message[T], error) {
-	var m Message[T]
-	if err := json.Unmarshal(raw, &m); err != nil {
-		return Message[T]{}, err
-	}
-	return m, nil
+type ResponseMessage[T any] struct {
+	Type Type `json:"type"`
+	Data T    `json:"data"`
 }
 
 func GetRoutePart(raw []byte) (RouteSection, error) {

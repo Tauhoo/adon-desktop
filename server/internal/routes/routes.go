@@ -15,7 +15,7 @@ type RouteHandler interface {
 
 type routeHandler[I any, O any] struct {
 	route   string
-	handler func(messages.Message[I]) messages.Message[O]
+	handler func(messages.RequestMessage[I]) messages.ResponseMessage[O]
 }
 
 func (rh routeHandler[I, O]) GetRoute() string {
@@ -23,7 +23,7 @@ func (rh routeHandler[I, O]) GetRoute() string {
 }
 
 func (rh routeHandler[I, O]) Handle(m *astilectron.EventMessage) (v interface{}) {
-	var input messages.Message[I]
+	var input messages.RequestMessage[I]
 	if err := m.Unmarshal(&input); err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func (rh routeHandler[I, O]) Handle(m *astilectron.EventMessage) (v interface{})
 }
 
 func Regist(service services.Service, w *astilectron.Window) {
-	routeHandlerList := []RouteHandler{}
+	routeHandlerList := getRouteHandlerList(service)
 	w.OnMessage(func(m *astilectron.EventMessage) (v interface{}) {
 		var routeSection messages.RouteSection
 		if err := m.Unmarshal(routeSection); err != nil {

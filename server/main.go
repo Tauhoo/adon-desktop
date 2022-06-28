@@ -27,10 +27,10 @@ func main() {
 		VersionAstilectron: conf.VersionAstilectron,
 		VersionElectron:    conf.VersionElectron,
 	})
-	defer astilectronInstance.Close()
 
-	// Start astilectron
 	astilectronInstance.Start()
+	defer astilectronInstance.Close()
+	// Start astilectron
 
 	window, err := astilectronInstance.NewWindow(conf.ClientLocation, &astilectron.WindowOptions{
 		Center: astikit.BoolPtr(true),
@@ -43,6 +43,10 @@ func main() {
 
 	window.Create()
 	defer window.Close()
+
+	if conf.Env == config.DevEnv {
+		window.OpenDevTools()
+	}
 
 	job := adon.NewJob()
 	pluginManager := adon.NewPluginManager(job)

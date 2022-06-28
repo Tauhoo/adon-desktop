@@ -6,9 +6,17 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var env = "dev"
+type Env = string
+
+const (
+	DevEnv  = "dev"
+	ProdEnv = "prod"
+)
+
+var env = DevEnv
 
 type Config struct {
+	Env                Env    `yaml:"env"`
 	ClientLocation     string `yaml:"client-location"`
 	AppName            string `yaml:"app-name"`
 	AppIconDefaultPath string `yaml:"app-icon-default-path"`
@@ -35,9 +43,9 @@ func NewFromFile(path string) (Config, error) {
 
 func New() (Config, error) {
 	switch env {
-	case "prod":
+	case ProdEnv:
 		return NewFromFile("resources/prod.config.yml")
-	case "dev":
+	case DevEnv:
 		fallthrough
 	default:
 		return NewFromFile("resources/dev.config.yml")
