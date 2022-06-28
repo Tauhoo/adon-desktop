@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+import Container from './components/Container';
+import Navbar from './components/Navbar';
+import PluginMenu from './components/PluginMenu';
+import Panel from './components/Panel';
+import { useAstilectron } from './provider/astilectronProvider';
+
+const Layout = styled.div`
+display: grid;
+grid-template-columns: max-content 1fr;
+height: 100%;
+`
 
 function App() {
+  const { astilectron } = useAstilectron()
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Navbar></Navbar>
+      <Layout>
+        <PluginMenu></PluginMenu>
+        <Panel></Panel>
+      </Layout>
+    </Container>
   );
 }
 

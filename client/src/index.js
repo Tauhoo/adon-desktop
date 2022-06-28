@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AstilectronProvider } from './provider/astilectronProvider';
+
+import App from './App';
+import './index.css';
+import "antd/dist/antd.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <AstilectronProvider>
+      <App />
+    </AstilectronProvider>
   </React.StrictMode>
 );
 
