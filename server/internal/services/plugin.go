@@ -1,16 +1,28 @@
 package services
 
-import "github.com/Tauhoo/adon-desktop/internal/messages"
+import (
+	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/plugin"
+)
 
-func (s service) GetPluginList(_ messages.RequestMessage[any]) messages.ResponseMessage[[]string] {
-	result := []string{}
+type PluginBuildInfo struct {
+	ProjectPath string `json:"project_path"`
+	GoPath      string `json:"go_path"`
+	PluginName  string `json:"plugin_name"`
+}
 
-	for _, record := range s.pluginManager.GetPluginStorage().GetList() {
-		result = append(result, record.Name)
+func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
+	info := plugin.BuildInfo{
+		ProjectPath: pluginBuildInfo.ProjectPath,
+		TargetPath:  s.config.WorkSpaceDirectory,
+		GoPath:      pluginBuildInfo.GoPath,
+		PluginName:  pluginBuildInfo.PluginName,
 	}
 
-	return messages.ResponseMessage[[]string]{
-		Type: messages.SUCCESS,
-		Data: result,
+	_, err := plugin.Build(info)
+	if err != nil {
+		return errors.New(BuildPluginFailCode, err)
 	}
+
+	return nil
 }

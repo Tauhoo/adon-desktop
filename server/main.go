@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -48,9 +49,16 @@ func main() {
 		window.OpenDevTools()
 	}
 
+	if _, err := os.Stat(conf.WorkSpaceDirectory); os.IsNotExist(err) {
+		if err := os.Mkdir(conf.WorkSpaceDirectory, os.ModeDir.Perm()); err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+	}
+
 	job := adon.NewJob()
 	pluginManager := adon.NewPluginManager(job)
-	service := services.New(pluginManager, window)
+	service := services.New(pluginManager, window, conf)
 
 	routes.Regist(service, window)
 

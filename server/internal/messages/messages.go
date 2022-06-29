@@ -1,6 +1,10 @@
 package messages
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/Tauhoo/adon-desktop/internal/errors"
+)
 
 type Type = int
 
@@ -13,15 +17,14 @@ type RouteSection struct {
 	Route string `json:"route"`
 }
 
-type RequestMessage[T any] struct {
-	Type  Type   `json:"type"`
+type RequestMessage struct {
 	Route string `json:"route"`
-	Data  T      `json:"data"`
+	Data  any    `json:"data"`
 }
 
-type ResponseMessage[T any] struct {
-	Type Type `json:"type"`
-	Data T    `json:"data"`
+type ResponseMessage struct {
+	Code string `json:"code"`
+	Data any    `json:"data"`
 }
 
 func GetRoutePart(raw []byte) (RouteSection, error) {
@@ -30,4 +33,25 @@ func GetRoutePart(raw []byte) (RouteSection, error) {
 		return RouteSection{}, err
 	}
 	return m, nil
+}
+
+func NewResponseMessage(data any) ResponseMessage {
+	return ResponseMessage{
+		Code: "SUCCESS",
+		Data: data,
+	}
+}
+
+func NewResponseEmptyMessage() ResponseMessage {
+	return ResponseMessage{
+		Code: "SUCCESS",
+		Data: nil,
+	}
+}
+
+func NewResponseErrorMessage(err errors.Error) ResponseMessage {
+	return ResponseMessage{
+		Code: string(err.GetCode()),
+		Data: err.GetData(),
+	}
 }
