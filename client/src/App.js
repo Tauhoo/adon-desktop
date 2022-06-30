@@ -13,6 +13,10 @@ height: 100%;
 
 function App() {
   const { astilectron } = useAstilectron()
+
+  if (astilectron == null) {
+    return null
+  }
   return (
     <Container>
       <Navbar></Navbar>
