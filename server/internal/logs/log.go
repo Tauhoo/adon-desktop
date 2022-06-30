@@ -5,5 +5,5 @@ import (
 	"os"
 )
 
-var LogErrorLogger = log.New(os.Stdout, "[ADON][ERROR]", log.LstdFlags)
-var LogInfoLogger = log.New(os.Stdout, "[ADON][INFO]", log.LstdFlags)
+var ErrorLogger = log.New(os.Stdout, "[ADON][ERROR]", log.LstdFlags)
+var InfoLogger = log.New(os.Stdout, "[ADON][INFO]", log.LstdFlags)

@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"github.com/Tauhoo/adon-desktop/internal/plugin"
 )
 
@@ -12,6 +13,7 @@ type PluginBuildInfo struct {
 }
 
 func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
+	logs.InfoLogger.Printf("start add new plugin - info: %#v\n", pluginBuildInfo)
 	info := plugin.BuildInfo{
 		ProjectPath: pluginBuildInfo.ProjectPath,
 		TargetPath:  s.config.WorkSpaceDirectory,
@@ -19,9 +21,15 @@ func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
 		PluginName:  pluginBuildInfo.PluginName,
 	}
 
-	_, err := plugin.Build(info)
+	targetFilename, err := plugin.Build(info)
 	if err != nil {
-		return errors.New(BuildPluginFailCode, err)
+		logs.ErrorLogger.Printf("build plugin fail - error: %#v\n", err.Error())
+		return errors.New(BuildPluginFailCode, err.Error())
+	}
+
+	if err := s.pluginManager.LoadPluginFromFile(targetFilename); err != nil {
+		logs.ErrorLogger.Printf("build plugin fail - error: %#v\n", err.Error())
+		return errors.New(LoadPluginFailCode, err.Error())
 	}
 
 	return nil

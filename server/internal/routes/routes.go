@@ -4,58 +4,82 @@ import (
 	"encoding/json"
 
 	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"github.com/Tauhoo/adon-desktop/internal/messages"
 	"github.com/Tauhoo/adon-desktop/internal/services"
 	"github.com/asticode/go-astilectron"
 )
 
-type Transaction interface {
-	GetRequest() messages.RequestMessage
-	GetResponse() messages.ResponseMessage
+// type Transaction interface {
+// 	GetRequest() (messages.RequestMessage, errors.Error)
+// 	GetResponse() messages.ResponseMessage
 
-	SetResponse(v any)
-	SetError(v errors.Error)
-}
+// 	SetResponse(v any)
+// 	SetError(v errors.Error)
+// }
 
-type transaction struct {
-	response messages.ResponseMessage
-	request  messages.RequestMessage
-}
+// type transaction struct {
+// 	m *astilectron.EventMessage
+// 	response messages.ResponseMessage
+// 	request  messages.RequestMessage
+// }
 
-func (t transaction) GetRequest() messages.RequestMessage {
-	return t.request
-}
+// func (t transaction) GetRequest() messages.RequestMessage {
+// 	return t.request
+// }
 
-func (t transaction) SetResponse(v any) {
-	t.response = messages.NewResponseMessage(v)
-}
+// func (t transaction) SetResponse(v any) {
+// 	t.response = messages.NewResponseMessage(v)
+// }
 
-func (t transaction) SetError(v errors.Error) {
-	t.response = messages.NewResponseErrorMessage(v)
-}
+// func (t transaction) SetError(v errors.Error) {
+// 	t.response = messages.NewResponseErrorMessage(v)
+// }
 
-func (t transaction) GetResponse() messages.ResponseMessage {
-	return t.response
-}
+// func (t transaction) GetResponse() messages.ResponseMessage {
+// 	return t.response
+// }
 
-func NewTansaction(m *astilectron.EventMessage) (Transaction, errors.Error) {
-	var req messages.RequestMessage
-	err := m.Unmarshal(&req)
+func ReadEventMessage[T any](m *astilectron.EventMessage) (messages.RequestMessage[T], errors.Error) {
+	var req messages.RequestMessage[T]
+	var reqString string
+	err := m.Unmarshal(&reqString)
 	if err != nil {
-		return nil, errors.New(UnmashalFailErrCode, err.Error())
+		logs.ErrorLogger.Printf("fail unmarshal astilectron message to string - message: %#v, error: %s\n", m, err.Error())
+		return messages.RequestMessage[T]{}, errors.New(UnmarshalFailErrCode, err.Error())
 	}
-	return transaction{
-		request: req,
-		response: messages.NewResponseErrorMessage(
-			errors.NewWithoutData(NoResponseErrCode),
-		),
-	}, nil
+
+	err = json.Unmarshal([]byte(reqString), &req)
+	if err != nil {
+		logs.ErrorLogger.Printf("fail unmarshal astilectron message to string - message: %#v, error: %s\n", reqString, err.Error())
+		return messages.RequestMessage[T]{}, errors.New(UnmarshalFailErrCode, err.Error())
+	}
+
+	return req, nil
 }
 
-type Handler = func(service services.Service, transaction Transaction)
+func ReadEventMessageRoute(m *astilectron.EventMessage) (messages.RouteSection, errors.Error) {
+	var req messages.RouteSection
+	var reqString string
+	err := m.Unmarshal(&reqString)
+	if err != nil {
+		logs.ErrorLogger.Printf("fail unmarshal astilectron message to string - message: %#v, error: %s\n", m, err.Error())
+		return messages.RouteSection{}, errors.New(UnmarshalFailErrCode, err.Error())
+	}
+
+	err = json.Unmarshal([]byte(reqString), &req)
+	if err != nil {
+		logs.ErrorLogger.Printf("fail unmarshal astilectron message to string - message: %#v, error: %s\n", reqString, err.Error())
+		return messages.RouteSection{}, errors.New(UnmarshalFailErrCode, err.Error())
+	}
+
+	return req, nil
+}
+
+type Handler = func(service services.Service, m *astilectron.EventMessage) any
 
 type Router interface {
-	Route(tx Transaction) []byte
+	Route(m *astilectron.EventMessage) string
 }
 
 type router struct {
@@ -63,19 +87,28 @@ type router struct {
 	service  services.Service
 }
 
-func (r router) Route(tx Transaction) []byte {
-	msg := tx.GetRequest()
-	handler, ok := handlers[msg.Route]
-	if !ok {
-		return []byte(`{"code":"ROUTE_NOT_FOUND"}`)
+func (r router) Route(m *astilectron.EventMessage) string {
+	routeSection, err := ReadEventMessageRoute(m)
+	if err != nil {
+		return `{"code":"CANNOT_READ_ROUTE_SECTION"}`
 	}
 
-	handler(r.service, tx)
-	raw, err := json.Marshal(tx.GetResponse())
-	if err != nil {
-		return []byte(`{"code":"MASHAL_REPONSE_FAIL"}`)
+	logs.InfoLogger.Printf("start route transaction - route: %s\n", routeSection.Route)
+
+	handler, ok := handlers[routeSection.Route]
+	if !ok {
+		logs.ErrorLogger.Printf("route not found - route: %s\n", routeSection.Route)
+		return `{"code":"ROUTE_NOT_FOUND"}`
 	}
-	return raw
+
+	res := handler(r.service, m)
+
+	raw, rawerr := json.Marshal(res)
+	if rawerr != nil {
+		logs.ErrorLogger.Printf("marshal response fail - route: %s\n", routeSection.Route)
+		return `{"code":"MARSHAL_REPONSE_FAIL"}`
+	}
+	return string(raw)
 }
 
 func NewRouter(service services.Service) Router {
@@ -88,10 +121,6 @@ func NewRouter(service services.Service) Router {
 func Regist(service services.Service, w *astilectron.Window) {
 	r := NewRouter(service)
 	w.OnMessage(func(m *astilectron.EventMessage) (v interface{}) {
-		tx, err := NewTansaction(m)
-		if err != nil {
-			return `{"code":"CREATE_TRANSACTION_FAIL"}`
-		}
-		return r.Route(tx)
+		return r.Route(m)
 	})
 }

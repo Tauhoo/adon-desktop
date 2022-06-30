@@ -50,7 +50,7 @@ func main() {
 	}
 
 	if _, err := os.Stat(conf.WorkSpaceDirectory); os.IsNotExist(err) {
-		if err := os.Mkdir(conf.WorkSpaceDirectory, os.ModeDir.Perm()); err != nil {
+		if err := os.Mkdir(conf.WorkSpaceDirectory, 0777); err != nil {
 			fmt.Println(err.Error())
 			return
 		}
