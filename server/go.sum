@@ -2,6 +2,8 @@ github.com/Tauhoo/adon v0.0.0-20220626075346-0303ca2a4ebf h1:yZrncNhPfeVcNAeanxa
 github.com/Tauhoo/adon v0.0.0-20220626075346-0303ca2a4ebf/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
 github.com/Tauhoo/adon v0.0.0-20220630113526-58363e870bc6 h1:i/4IkmYV4kQI4+7+iBfbFs0kIeCSfd/geJfilBPpoXg=
 github.com/Tauhoo/adon v0.0.0-20220630113526-58363e870bc6/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
+github.com/Tauhoo/adon v0.0.0-20220630142023-eb7d9c495c6d h1:qKjJyhbGFT9Id8/bw8NIQGl7PlVh7VydHhvvy4sVZhg=
+github.com/Tauhoo/adon v0.0.0-20220630142023-eb7d9c495c6d/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
 github.com/asticode/go-astikit v0.29.1 h1:w27sLYXK84mDwArf/Vw1BiD5dfD5PBDB+iHoIcpYq0w=
 github.com/asticode/go-astikit v0.29.1/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
 github.com/asticode/go-astilectron v0.29.0 h1:oeceXo55BwcOWUMF/9FHfURBCORt7tgMwh7zeYyFGj0=

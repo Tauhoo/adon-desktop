@@ -9,6 +9,9 @@ import (
 
 type Service interface {
 	AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error
+	GetPluginNameList() []string
+	GetFunctionList(pluginName string) ([]Function, errors.Error)
+	GetVariableList(pluginName string) ([]Variable, errors.Error)
 }
 
 type service struct {

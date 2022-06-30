@@ -9,4 +9,6 @@ require (
 
 require github.com/asticode/go-astikit v0.29.1
 
-require github.com/Tauhoo/adon v0.0.0-20220630113526-58363e870bc6
+require github.com/Tauhoo/adon v0.0.0-20220630142023-eb7d9c495c6d
+
+replace github.com/Tauhoo/adon => /Users/tauhoo/Documents/adon  

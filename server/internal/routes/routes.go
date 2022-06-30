@@ -120,7 +120,13 @@ func NewRouter(service services.Service) Router {
 
 func Regist(service services.Service, w *astilectron.Window) {
 	r := NewRouter(service)
+	logs.InfoLogger.Printf("regist handlers\n")
+
 	w.OnMessage(func(m *astilectron.EventMessage) (v interface{}) {
 		return r.Route(m)
 	})
+
+	for route, _ := range handlers {
+		logs.InfoLogger.Printf(route)
+	}
 }
