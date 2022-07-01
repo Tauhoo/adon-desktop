@@ -1,5 +1,6 @@
 import { PageHeader } from "antd"
 import styled from "styled-components"
+import { CreatePluginPanelModal } from "./CreatePluginPanel"
 
 const Container = styled.div`
 padding: 20px 60px;
@@ -32,6 +33,7 @@ const variableInfo = {
 
 function PluginPanel() {
     return <Container>
+        <CreatePluginPanelModal></CreatePluginPanelModal>
         <PageHeader
             title="Function name"
             subTitle="This is a subtitle"
