@@ -1,7 +1,10 @@
 package services
 
 import (
+	"os"
+
 	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/gocli"
 	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"github.com/Tauhoo/adon-desktop/internal/plugin"
 )
@@ -28,7 +31,10 @@ func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
 	}
 
 	if err := s.pluginManager.LoadPluginFromFile(targetFilename); err != nil {
-		logs.ErrorLogger.Printf("build plugin fail - error: %#v\n", err.Error())
+		logs.ErrorLogger.Printf("load plugin fail - error: %#v\n", err.Error())
+		if rerr := os.Remove(targetFilename); rerr != nil {
+			logs.ErrorLogger.Printf("delete plugin fail - error: %#v\n", rerr.Error())
+		}
 		return errors.New(LoadPluginFailCode, err.Error())
 	}
 
@@ -101,4 +107,8 @@ func (s service) GetVariableList(pluginName string) ([]Variable, errors.Error) {
 	}
 
 	return variableList, nil
+}
+
+func (s service) GetAllGoBinPath() ([]string, errors.Error) {
+	return gocli.GetAllGoBin()
 }

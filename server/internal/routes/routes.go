@@ -10,36 +10,6 @@ import (
 	"github.com/asticode/go-astilectron"
 )
 
-// type Transaction interface {
-// 	GetRequest() (messages.RequestMessage, errors.Error)
-// 	GetResponse() messages.ResponseMessage
-
-// 	SetResponse(v any)
-// 	SetError(v errors.Error)
-// }
-
-// type transaction struct {
-// 	m *astilectron.EventMessage
-// 	response messages.ResponseMessage
-// 	request  messages.RequestMessage
-// }
-
-// func (t transaction) GetRequest() messages.RequestMessage {
-// 	return t.request
-// }
-
-// func (t transaction) SetResponse(v any) {
-// 	t.response = messages.NewResponseMessage(v)
-// }
-
-// func (t transaction) SetError(v errors.Error) {
-// 	t.response = messages.NewResponseErrorMessage(v)
-// }
-
-// func (t transaction) GetResponse() messages.ResponseMessage {
-// 	return t.response
-// }
-
 func ReadEventMessage[T any](m *astilectron.EventMessage) (messages.RequestMessage[T], errors.Error) {
 	var req messages.RequestMessage[T]
 	var reqString string

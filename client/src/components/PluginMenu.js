@@ -2,7 +2,7 @@ import { Menu } from "antd"
 import { InboxOutlined } from '@ant-design/icons';
 import { usePluginMenu } from "../hook/pluginHook";
 import styled from "styled-components";
-import { Button } from "antd";
+import { CreatePluginPanelModal } from "./CreatePluginPanel"
 
 
 const Container = styled.div`
@@ -29,6 +29,7 @@ function PluginMenu() {
     })
 
     return <Container>
+        <CreatePluginPanelModal></CreatePluginPanelModal>
         <Menu
             items={[{
                 key: "plugin-list",

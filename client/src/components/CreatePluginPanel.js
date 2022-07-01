@@ -53,11 +53,11 @@ function CreatePluginPanel() {
     const onChangeFile = (event) => {
         const files = event.target.files;
         const filterFiles = [...files].filter(value => value.name === "go.mod")
-
         if (filterFiles.length != 1) {
             setProjectPath(null)
             return
         }
+
         const [goModFile] = filterFiles
         const filePathLength = goModFile.name.length + 1
         const newProjectPath = goModFile.path.slice(0, goModFile.path.length - filePathLength)
@@ -70,7 +70,6 @@ function CreatePluginPanel() {
         }
 
         if (!/^[a-zA-Z_]*$/.test(name)) {
-            console.log("REACH");
             return setWarning("name must consist of a-z, A-Z and _ only")
         }
 
@@ -87,8 +86,6 @@ function CreatePluginPanel() {
 
         try {
             await plugin.addNewPlugin(projectPath, goBinPath, name)
-            setGoBinPath(null)
-            setProjectPath(null)
             setName("")
         } catch (error) {
             setWarning(`build plugin fail code: ${error.code}, info: ${error.data}`)

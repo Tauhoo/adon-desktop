@@ -48,3 +48,11 @@ var GetVariableList = func(service services.Service, m *astilectron.EventMessage
 		return messages.NewResponseMessage(nameList)
 	}
 }
+
+var GetAllGoBinPath = func(service services.Service, _ *astilectron.EventMessage) any {
+	if nameList, err := service.GetAllGoBinPath(); err != nil {
+		return messages.NewResponseErrorMessage(err)
+	} else {
+		return messages.NewResponseMessage(nameList)
+	}
+}

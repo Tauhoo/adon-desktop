@@ -20,6 +20,10 @@ class plugin {
     getAllGoBinPath() {
         return api.send("service/get-all-go-bin-path", null)
     }
+
+    onPluginAdded(callback) {
+        return api.listen("route/plugin-added", callback)
+    }
 }
 
 export default new plugin()

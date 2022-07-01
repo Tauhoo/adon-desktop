@@ -25,6 +25,7 @@ type Config struct {
 	VersionAstilectron string `yaml:"version-astilectron"`
 	VersionElectron    string `yaml:"version-electron"`
 	WorkSpaceDirectory string `yaml:"work-space-directory"`
+	HomePath           string `yaml:"home-path"`
 }
 
 func NewFromFile(path string) (Config, error) {

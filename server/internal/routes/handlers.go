@@ -5,4 +5,5 @@ var handlers = map[string]Handler{
 	"service/get-function-list":    GetFunctionList,
 	"service/get-variable-list":    GetVariableList,
 	"service/get-plugin-name-list": GetPluginNameList,
+	"service/get-all-go-bin-path":  GetAllGoBinPath,
 }
