@@ -16,6 +16,7 @@ type BuildInfo struct {
 	TargetPath  string
 	GoPath      string
 	PluginName  string
+	Prefix      string
 }
 
 func Build(b BuildInfo) (string, error) {
@@ -26,7 +27,7 @@ func Build(b BuildInfo) (string, error) {
 	if err != nil {
 		return "", errors.New(fmt.Sprint(err))
 	}
-	args := append([]string{"build", "-buildmode=plugin", "-o", targetFilename}, mainFiles...)
+	args := append([]string{"build", "-buildmode=plugin", fmt.Sprintf("-ldflags=\"-pluginpath=plugin/%s\"", b.Prefix), "-o", targetFilename}, mainFiles...)
 
 	command := exec.Command(b.GoPath, args...)
 	command.Dir = b.ProjectPath

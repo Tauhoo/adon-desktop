@@ -22,6 +22,7 @@ func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
 		TargetPath:  s.config.WorkSpaceDirectory,
 		GoPath:      pluginBuildInfo.GoPath,
 		PluginName:  pluginBuildInfo.PluginName,
+		Prefix:      pluginBuildInfo.PluginName,
 	}
 
 	targetFilename, err := plugin.Build(info)
@@ -36,6 +37,10 @@ func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
 			logs.ErrorLogger.Printf("delete plugin fail - error: %#v\n", rerr.Error())
 		}
 		return errors.New(LoadPluginFailCode, err.Error())
+	}
+
+	if err := s.api.PluginAdded(targetFilename); err != nil {
+		logs.ErrorLogger.Printf("send plugin added event fail - error: %#v\n", err)
 	}
 
 	return nil

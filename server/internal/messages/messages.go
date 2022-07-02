@@ -32,6 +32,13 @@ func NewResponseMessage[T any](data T) ResponseMessage[T] {
 	}
 }
 
+func NewRequestMessage[T any](route string, data T) RequestMessage[T] {
+	return RequestMessage[T]{
+		Route: route,
+		Data:  data,
+	}
+}
+
 func NewResponseEmptyMessage() ResponseMessage[interface{}] {
 	return ResponseMessage[interface{}]{
 		Code: "SUCCESS",
