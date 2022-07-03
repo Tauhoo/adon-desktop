@@ -9,6 +9,13 @@ class plugin {
         return api.send("service/get-function-list", pluginName)
     }
 
+    getFunction(pluginName, functionName) {
+        return api.send("service/get-function", {
+            plugin_name: pluginName,
+            function_name: functionName
+        })
+    }
+
     getVariableList(pluginName) {
         return api.send("service/get-variable-list", pluginName)
     }

@@ -19,13 +19,12 @@ overflow-y: scroll;
 
 function PluginMenu({ onClickFunction, onClickVariable }) {
     const value = usePluginMenu()
-
     return <Container>
         <CreatePluginPanelModal></CreatePluginPanelModal>
         <div style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
             <Collapse ghost >
                 {value.map(name => {
-                    return <Panel header={name} key={name} >
+                    return <Panel header={name} key={name}>
                         <Button type='text' style={{ width: "100%", textAlign: "start" }} onClick={() => { if (onClickVariable) onClickVariable(name) }}>Variable</Button>
                         <Divider style={{ margin: "5px" }} />
                         <FunctionMenu pluginName={name} onClick={(funcName) => { if (onClickFunction) onClickFunction(name, funcName) }}></FunctionMenu>

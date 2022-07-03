@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import PluginMenu from './components/PluginMenu';
 import Panel from './components/Panel';
 import { useAstilectron } from './provider/astilectronProvider';
+import usePageHook from './hook/pageHook';
 
 const Layout = styled.div`
 display: grid;
@@ -13,16 +14,23 @@ height: 100%;
 
 function App() {
   const { astilectron } = useAstilectron()
-
-  if (astilectron == null) {
+  const { activePage, pages, selectFuctionPage, selectVariablePage } = usePageHook()
+  if (astilectron === null) {
     return null
   }
   return (
     <Container>
       <Navbar></Navbar>
       <Layout>
-        <PluginMenu onClickFunction={console.log} onClickVariable={console.log}></PluginMenu>
-        <Panel></Panel>
+        <PluginMenu
+          onClickFunction={selectFuctionPage}
+          onClickVariable={selectVariablePage}></PluginMenu>
+        <Panel
+          activePage={activePage}
+          pages={pages}
+          selectFuctionPage={selectFuctionPage}
+          selectVariablePage={selectVariablePage}
+        />
       </Layout>
     </Container>
   );
