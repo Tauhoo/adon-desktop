@@ -43,13 +43,6 @@ func main() {
 		panic(err)
 	}
 
-	window.Create()
-	defer window.Close()
-
-	if conf.Env == config.DevEnv {
-		window.OpenDevTools()
-	}
-
 	if _, err := os.Stat(conf.WorkSpaceDirectory); os.IsNotExist(err) {
 		if err := os.Mkdir(conf.WorkSpaceDirectory, 0777); err != nil {
 			fmt.Println(err.Error())
@@ -68,6 +61,13 @@ func main() {
 	service := services.New(pluginManager, window, conf)
 
 	routes.Regist(service, window)
+
+	window.Create()
+	defer window.Close()
+
+	if conf.Env == config.DevEnv {
+		window.OpenDevTools()
+	}
 
 	// Blocking pattern
 	astilectronInstance.Wait()

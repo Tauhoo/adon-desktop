@@ -36,6 +36,24 @@ var GetFunctionList = func(service services.Service, m *astilectron.EventMessage
 	}
 }
 
+type GetFunctionReq struct {
+	PluginName   string `json:"plugin_name"`
+	FunctionName string `json:"function_name"`
+}
+
+var GetFunction = func(service services.Service, m *astilectron.EventMessage) any {
+	req, err := ReadEventMessage[GetFunctionReq](m)
+	if err != nil {
+		return messages.NewResponseErrorMessage(err)
+	}
+
+	if function, err := service.GetFunction(req.Data.PluginName, req.Data.FunctionName); err != nil {
+		return messages.NewResponseErrorMessage(err)
+	} else {
+		return messages.NewResponseMessage(function)
+	}
+}
+
 var GetVariableList = func(service services.Service, m *astilectron.EventMessage) any {
 	req, err := ReadEventMessage[string](m)
 	if err != nil {

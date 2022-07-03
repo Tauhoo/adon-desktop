@@ -13,6 +13,7 @@ type Service interface {
 	GetPluginNameList() []string
 	GetFunctionList(pluginName string) ([]Function, errors.Error)
 	GetVariableList(pluginName string) ([]Variable, errors.Error)
+	GetFunction(pluginName string, functionName string) (Function, errors.Error)
 
 	GetAllGoBinPath() ([]string, errors.Error)
 }

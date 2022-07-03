@@ -92,6 +92,37 @@ func (s service) GetFunctionList(pluginName string) ([]Function, errors.Error) {
 	return functionList, nil
 }
 
+func (s service) GetFunction(pluginName string, functionName string) (Function, errors.Error) {
+	logs.InfoLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
+	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
+	if !ok {
+		logs.ErrorLogger.Printf("not found plugin %s\n", pluginName)
+		return Function{}, errors.NewWithoutData(PluginNotFoundCode)
+	}
+
+	functionRecord, ok := pluginRecord.Value.GetExecutorStorage().Find(functionName)
+	if !ok {
+		logs.ErrorLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
+		return Function{}, errors.NewWithoutData(PluginNotFoundCode)
+	}
+
+	argTypeList := []string{}
+	for _, argKind := range functionRecord.Value.GetFunction().GetParamList() {
+		argTypeList = append(argTypeList, argKind.String())
+	}
+
+	returnTypeList := []string{}
+	for _, returnKind := range functionRecord.Value.GetFunction().GetReturnList() {
+		returnTypeList = append(returnTypeList, returnKind.String())
+	}
+
+	return Function{
+		Name:        functionRecord.Name,
+		ArgTypes:    argTypeList,
+		ReturnTypes: returnTypeList,
+	}, nil
+}
+
 type Variable struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
