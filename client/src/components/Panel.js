@@ -8,6 +8,7 @@ const { TabPane } = Tabs
 
 const Container = styled.div`
 padding: 20px 60px;
+width: calc(100vw - 300px);
 `
 
 function getTabFromPage(page) {
@@ -62,7 +63,7 @@ function PluginPanel({ activePage, pages, selectFuctionPage, selectVariablePage 
     }
 
     return <Container>
-        <Tabs activeKey={getTabKeyFromPage(activePage)} onTabClick={onSelect}>
+        <Tabs activeKey={getTabKeyFromPage(activePage)} onTabClick={onSelect} >
             {pages.map((page) => {
                 const tab = getTabFromPage(page)
                 const key = getTabKeyFromPage(page)

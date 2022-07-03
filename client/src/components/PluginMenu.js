@@ -20,7 +20,9 @@ overflow-y: scroll;
 function PluginMenu({ onClickFunction, onClickVariable }) {
     const value = usePluginMenu()
     return <Container>
-        <CreatePluginPanelModal></CreatePluginPanelModal>
+        <div style={{ paddingTop: "20px", paddingBottom: "5px" }}>
+            <CreatePluginPanelModal></CreatePluginPanelModal>
+        </div>
         <div style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
             <Collapse ghost >
                 {value.map(name => {

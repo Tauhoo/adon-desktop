@@ -123,7 +123,7 @@ export function CreatePluginPanelModal() {
     const [visible, setVisible] = useState(false)
     return <>
         <div style={{ height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Button type="text" onClick={() => setVisible(true)}>Create plugin</Button>
+            <Button type="primary" onClick={() => setVisible(true)}>Create plugin</Button>
         </div>
         <Modal
             visible={visible}

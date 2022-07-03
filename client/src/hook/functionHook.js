@@ -6,17 +6,25 @@ function useFunction(pluginName, functionName) {
     const [returns, setReturns] = useState([])
     const [outputs, setOutput] = useState([])
 
+    const [params, setParams] = useState([])
+
     const initFunction = async () => {
         const func = await plugin.getFunction(pluginName, functionName)
         setArgs(func.data.arg_types)
         setReturns(func.data.return_types)
+        setParams(new Array(func.data.arg_types.length))
     }
 
     useEffect(() => {
         initFunction()
     }, [])
 
-    return { args, returns, outputs }
+    const setParam = (index, value) => {
+        params[index] = value
+        setParams([...params])
+    }
+
+    return { args, returns, outputs, setParams }
 }
 
 export default useFunction
