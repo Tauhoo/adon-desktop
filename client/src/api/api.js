@@ -8,7 +8,7 @@ class api {
 
     send(route, data) {
         return new Promise((resolve, reject) => {
-            if (typeof astilectron == undefined) {
+            if (typeof astilectron === "undefined") {
                 reject({ code: "ASTILECTRON_UNDEFINED" })
             }
             astilectron.sendMessage(JSON.stringify({ route, data }), function (message) {

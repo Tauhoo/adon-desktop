@@ -21,7 +21,7 @@ function App() {
     <Container>
       <Navbar></Navbar>
       <Layout>
-        <PluginMenu></PluginMenu>
+        <PluginMenu onClickFunction={console.log} onClickVariable={console.log}></PluginMenu>
         <Panel></Panel>
       </Layout>
     </Container>
