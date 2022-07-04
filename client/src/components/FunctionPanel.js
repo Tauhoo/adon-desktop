@@ -24,7 +24,6 @@ const { Title } = Typography
 function FunctionPanel({ functionName, pluginName }) {
     const { executeState, args, returns, outputs, params, setParam } = useFunction(pluginName, functionName)
     const onExecute = async () => {
-        console.log(params);
         for (const param of params) {
             if (param === null) return
         }
@@ -44,7 +43,7 @@ function FunctionPanel({ functionName, pluginName }) {
             {args.map((type, index) => {
                 return <Card key={String(index)}>
                     <Title level={4}>Arg {index} <Tag color="green">{type}</Tag></Title>
-                    <VariableInput key={String(index)} type={type} onChange={(value) => setParam(index, value)} />
+                    <VariableInput key={String(index)} type={type} value={params[index]} onChange={(value) => setParam(index, value)} />
                 </Card>
             })}
         </ArgumentContainer>
@@ -62,7 +61,7 @@ function FunctionPanel({ functionName, pluginName }) {
                 return <Card key={String(index)}>
                     <Title level={4}>Return {index} <Tag color="green">{type}</Tag></Title>
                     {isRunning && <LoadingOutlined />}
-                    {!isRunning && isOutputAvailable && <OutputContainer>{outputs[index]}</OutputContainer>}
+                    {!isRunning && isOutputAvailable && <OutputContainer>{typeof outputs[index] === "boolean" ? (outputs[index] ? "TRUE" : "FALSE") : outputs[index]}</OutputContainer>}
                     {!isRunning && isOutputAvailable && <Button type="primary" onClick={() => navigator.clipboard.writeText(String(outputs[index]))}>Copy</Button>}
                 </Card>
             })}

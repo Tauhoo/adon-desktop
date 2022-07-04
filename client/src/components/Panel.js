@@ -8,7 +8,7 @@ import VariablePanel from "./VariablePanel"
 const { TabPane } = Tabs
 
 const Container = styled.div`
-padding: 20px 60px;
+padding: 20px 30px;
 width: calc(100vw - 300px);
 `
 
@@ -64,10 +64,8 @@ function PluginPanel({ activePage, pages, selectFuctionPage, selectVariablePage,
     }
 
     const onEdit = (key, action) => {
-        console.log(key, action);
         if (action !== "remove") return
         const keyData = key.split("/")
-        console.log(keyData);
         switch (keyData[0]) {
             case PageType.FUNCTION:
                 return onRemoveFunctionPage(keyData[1], keyData[2])

@@ -29,6 +29,8 @@ function getIntRangeFromBit(bit, sign = true) {
 
 function getIntRangeFromType(type) {
     switch (type) {
+        case VariableType.Int:
+            return getIntRangeFromBit(32)
         case VariableType.Int8:
             return getIntRangeFromBit(8)
         case VariableType.Int16:
@@ -38,7 +40,7 @@ function getIntRangeFromType(type) {
         case VariableType.Int64:
             return getIntRangeFromBit(64)
         case VariableType.Uint:
-            return getIntRangeFromBit(32)
+            return getIntRangeFromBit(32, false)
         case VariableType.Uint8:
             return getIntRangeFromBit(8, false)
         case VariableType.Uint16:
@@ -52,7 +54,7 @@ function getIntRangeFromType(type) {
     }
 }
 
-function IntInput({ defaultValue = 0, onChange, type }) {
+function IntInput({ defaultValue = 0, onChange, type, value }) {
     const [max, min] = getIntRangeFromType(type)
     return <InputNumber
         style={{ width: "100%" }}
@@ -61,6 +63,8 @@ function IntInput({ defaultValue = 0, onChange, type }) {
         max={String(max)}
         step="1"
         onChange={onChange}
+        value={value}
+        precision={0}
     />
 }
 
@@ -74,7 +78,7 @@ function getFloatRangeFromType(type) {
     }
 }
 
-function FloatInput({ defaultValue = 0, onChange, type }) {
+function FloatInput({ defaultValue = 0, onChange, type, value }) {
     const [max, min] = getFloatRangeFromType(type)
     return <InputNumber
         style={{ width: "100%" }}
@@ -83,18 +87,19 @@ function FloatInput({ defaultValue = 0, onChange, type }) {
         max={max}
         onChange={onChange}
         precision={100}
+        value={value}
     />
 }
 
-function StringInput({ defaultValue = "", onChange }) {
-    return <Input style={{ width: "100%" }} defaultValue={defaultValue} onChange={({ target }) => onChange(target.value)}></Input>
+function StringInput({ defaultValue = "", onChange, value }) {
+    return <Input style={{ width: "100%" }} defaultValue={defaultValue} onChange={({ target }) => onChange(target.value)} value={value}></Input>
 }
 
-function BoolInput({ defaultValue = false, onChange }) {
-    return <Switch defaultChecked={defaultValue} onChange={({ target }) => onChange(target.checked)} />
+function BoolInput({ defaultValue = false, onChange, value }) {
+    return <Switch defaultChecked={defaultValue} onChange={({ target }) => onChange(target.checked)} value={value} />
 }
 
-function VariableInput({ defaultValue, onChange, type }) {
+function VariableInput({ defaultValue, onChange, type, value }) {
     switch (type) {
         case VariableType.Int:
         case VariableType.Int8:
@@ -106,14 +111,14 @@ function VariableInput({ defaultValue, onChange, type }) {
         case VariableType.Uint16:
         case VariableType.Uint32:
         case VariableType.Uint64:
-            return <IntInput defaultValue={defaultValue} onChange={onChange} type={type} />
+            return <IntInput defaultValue={defaultValue} onChange={onChange} type={type} value={value} />
         case VariableType.Float32:
         case VariableType.Float64:
-            return <FloatInput defaultValue={defaultValue} onChange={onChange} type={type} />
+            return <FloatInput defaultValue={defaultValue} onChange={onChange} type={type} value={value} />
         case VariableType.String:
-            return <StringInput defaultValue={defaultValue} onChange={onChange} />
+            return <StringInput defaultValue={defaultValue} onChange={onChange} value={value} />
         case VariableType.Bool:
-            return <BoolInput defaultValue={defaultValue} onChange={onChange} />
+            return <BoolInput defaultValue={defaultValue} onChange={onChange} value={value} />
         default:
             return null
     }

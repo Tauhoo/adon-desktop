@@ -32,7 +32,6 @@ export function useFunctionMenu(name) {
         try {
             const result = await plugin.getFunctionList(name)
             setFunctionMenu(result.data)
-            console.log(result);
         } catch (error) {
             console.log(error);
         }
