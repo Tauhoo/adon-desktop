@@ -55,11 +55,6 @@ func main() {
 	pluginManager := adon.NewPluginManager(job)
 	service := services.New(pluginManager, window, conf)
 	service.LoadAllPlugin()
-	// if err := pluginManager.LoadPluginFromFolder(conf.WorkSpaceDirectory); err != nil {
-	// 	logs.ErrorLogger.Println(err.Error())
-	// 	os.Exit(1)
-	// 	return
-	// }
 
 	routes.Regist(service, window)
 
