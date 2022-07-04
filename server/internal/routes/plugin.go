@@ -36,13 +36,13 @@ var GetFunctionList = func(service services.Service, m *astilectron.EventMessage
 	}
 }
 
-type GetFunctionReq struct {
+type FunctionIdentifyInfo struct {
 	PluginName   string `json:"plugin_name"`
 	FunctionName string `json:"function_name"`
 }
 
 var GetFunction = func(service services.Service, m *astilectron.EventMessage) any {
-	req, err := ReadEventMessage[GetFunctionReq](m)
+	req, err := ReadEventMessage[FunctionIdentifyInfo](m)
 	if err != nil {
 		return messages.NewResponseErrorMessage(err)
 	}
@@ -72,5 +72,23 @@ var GetAllGoBinPath = func(service services.Service, _ *astilectron.EventMessage
 		return messages.NewResponseErrorMessage(err)
 	} else {
 		return messages.NewResponseMessage(nameList)
+	}
+}
+
+type ExecuteInfo struct {
+	FunctionIdentifyInfo
+	Args []any `json:"args"`
+}
+
+var ExecuteFunction = func(service services.Service, m *astilectron.EventMessage) any {
+	req, err := ReadEventMessage[ExecuteInfo](m)
+	if err != nil {
+		return messages.NewResponseErrorMessage(err)
+	}
+
+	if err := service.ExecuteFunction(req.Data.PluginName, req.Data.FunctionName, req.Data.Args); err != nil {
+		return messages.NewResponseErrorMessage(err)
+	} else {
+		return messages.NewResponseMessage[any](nil)
 	}
 }

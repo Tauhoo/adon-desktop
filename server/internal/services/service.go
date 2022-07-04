@@ -14,6 +14,8 @@ type Service interface {
 	GetFunctionList(pluginName string) ([]Function, errors.Error)
 	GetVariableList(pluginName string) ([]Variable, errors.Error)
 	GetFunction(pluginName string, functionName string) (Function, errors.Error)
+	ExecuteFunction(pluginName, functionName string, args []interface{}) errors.Error
+	LoadAllPlugin()
 
 	GetAllGoBinPath() ([]string, errors.Error)
 }

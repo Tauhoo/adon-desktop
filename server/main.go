@@ -7,7 +7,6 @@ import (
 
 	"github.com/Tauhoo/adon"
 	"github.com/Tauhoo/adon-desktop/internal/config"
-	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"github.com/Tauhoo/adon-desktop/internal/routes"
 	"github.com/Tauhoo/adon-desktop/internal/services"
 	"github.com/asticode/go-astikit"
@@ -51,14 +50,16 @@ func main() {
 	}
 
 	job := adon.NewJob()
+	job.Start()
+	defer job.Stop()
 	pluginManager := adon.NewPluginManager(job)
-	if err := pluginManager.LoadPluginFromFolder(conf.WorkSpaceDirectory); err != nil {
-		logs.ErrorLogger.Println(err.Error())
-		os.Exit(1)
-		return
-	}
-
 	service := services.New(pluginManager, window, conf)
+	service.LoadAllPlugin()
+	// if err := pluginManager.LoadPluginFromFolder(conf.WorkSpaceDirectory); err != nil {
+	// 	logs.ErrorLogger.Println(err.Error())
+	// 	os.Exit(1)
+	// 	return
+	// }
 
 	routes.Regist(service, window)
 

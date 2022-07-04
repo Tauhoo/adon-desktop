@@ -3,12 +3,14 @@ package api
 import (
 	"encoding/json"
 
+	"github.com/Tauhoo/adon"
 	"github.com/Tauhoo/adon-desktop/internal/errors"
 	"github.com/asticode/go-astilectron"
 )
 
 type API interface {
 	PluginAdded(pluginName string) errors.Error
+	ExecutionStateChange(pluginName, function string, state adon.ExecuteState, info any) errors.Error
 }
 
 type api struct {

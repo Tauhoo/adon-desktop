@@ -2,7 +2,9 @@ package services
 
 import (
 	"os"
+	"reflect"
 
+	"github.com/Tauhoo/adon"
 	"github.com/Tauhoo/adon-desktop/internal/errors"
 	"github.com/Tauhoo/adon-desktop/internal/gocli"
 	"github.com/Tauhoo/adon-desktop/internal/logs"
@@ -103,7 +105,7 @@ func (s service) GetFunction(pluginName string, functionName string) (Function, 
 	functionRecord, ok := pluginRecord.Value.GetExecutorStorage().Find(functionName)
 	if !ok {
 		logs.ErrorLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
-		return Function{}, errors.NewWithoutData(PluginNotFoundCode)
+		return Function{}, errors.NewWithoutData(FunctionNotFoundCode)
 	}
 
 	argTypeList := []string{}
@@ -143,6 +145,68 @@ func (s service) GetVariableList(pluginName string) ([]Variable, errors.Error) {
 	}
 
 	return variableList, nil
+}
+
+func (s service) ExecuteFunction(pluginName, functionName string, args []interface{}) errors.Error {
+	logs.InfoLogger.Printf("start execute function - pluginName: %s, functionName: %s\n", pluginName, functionName)
+	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
+	if !ok {
+		logs.ErrorLogger.Printf("not found plugin %s\n", pluginName)
+		return errors.NewWithoutData(PluginNotFoundCode)
+	}
+
+	functionRecord, ok := pluginRecord.Value.GetExecutorStorage().Find(functionName)
+	if !ok {
+		logs.ErrorLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
+		return errors.NewWithoutData(FunctionNotFoundCode)
+	}
+
+	argVariables := []adon.Variable{}
+
+	params := functionRecord.Value.GetFunction().GetParamList()
+	functionType := functionRecord.Value.GetFunction().GetValue().Type()
+
+	if len(params) != len(args) {
+		return errors.NewWithoutData(FunctionArgsInvalidCode)
+	}
+
+	for index, _ := range params {
+		reflectValue := reflect.ValueOf(args[index]).Convert(functionType.In(index))
+		logs.InfoLogger.Printf("%s ", reflectValue.Kind().String())
+		argVariables = append(argVariables, adon.NewVariable(reflectValue))
+	}
+
+	logs.InfoLogger.Printf("execute function - pluginName: %s, functionName: %s\n", pluginName, functionName)
+	functionRecord.Value.Execute(argVariables...)
+	return nil
+}
+func (s service) LoadAllPlugin() {
+	if err := s.pluginManager.LoadPluginFromFolder(s.config.WorkSpaceDirectory); err != nil {
+		logs.ErrorLogger.Println(err.Error())
+		os.Exit(1)
+		return
+	}
+
+	for _, pluginRecord := range s.pluginManager.GetPluginStorage().GetList() {
+		for _, executorRecord := range pluginRecord.Value.GetExecutorStorage().GetList() {
+			stateEventPublisher := executorRecord.Value.GetStateEventPubliser()
+			fn := func(state adon.ExecuteState, info any) {
+				s.api.ExecutionStateChange(pluginRecord.Name, executorRecord.Name, state, info)
+			}
+			stateEventPublisher.Listen(adon.ExecuteDone, func(state adon.ExecuteState, info any) {
+				variables := info.([]adon.Variable)
+				infos := []any{}
+				for _, variable := range variables {
+					infos = append(infos, variable.GetValue().Interface())
+				}
+
+				s.api.ExecutionStateChange(pluginRecord.Name, executorRecord.Name, state, infos)
+			})
+			stateEventPublisher.Listen(adon.ExecuteRunning, fn)
+			stateEventPublisher.Listen(adon.ExecuteError, fn)
+			stateEventPublisher.Listen(adon.ExecuteIdle, fn)
+		}
+	}
 }
 
 func (s service) GetAllGoBinPath() ([]string, errors.Error) {
