@@ -28,8 +28,16 @@ class plugin {
         return api.send("service/get-all-go-bin-path", null)
     }
 
+    executeFunction(pluginName, functionName, args) {
+        return api.send("service/execute-function", { plugin_name: pluginName, function_name: functionName, args })
+    }
+
     onPluginAdded(callback) {
         return api.listen("route/plugin-added", callback)
+    }
+
+    onExecuteStateChange(callback) {
+        return api.listen("route/execute-state-change", callback)
     }
 }
 

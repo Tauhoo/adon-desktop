@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import plugin from "../api/plugin";
 
+export const ExecuteState = {
+    ExecuteIdle: "IDLE",
+    ExecuteError: "ERROR",
+    ExecuteRunning: "RUNNING",
+    ExecuteDone: "DONE",
+}
+
 function useFunction(pluginName, functionName) {
     const [args, setArgs] = useState([])
     const [returns, setReturns] = useState([])
     const [outputs, setOutput] = useState([])
+    const [executeState, setExecuteState] = useState(ExecuteState.ExecuteIdle)
 
     const [params, setParams] = useState([])
 
@@ -12,11 +20,16 @@ function useFunction(pluginName, functionName) {
         const func = await plugin.getFunction(pluginName, functionName)
         setArgs(func.data.arg_types)
         setReturns(func.data.return_types)
-        setParams(new Array(func.data.arg_types.length))
+        setParams(new Array(func.data.arg_types.length).fill(null))
+        setOutput(new Array(func.data.return_types.length).fill(null))
     }
 
     useEffect(() => {
         initFunction()
+        return plugin.onExecuteStateChange(({ data }) => {
+            setExecuteState(data.state)
+            setOutput(data.info)
+        })
     }, [])
 
     const setParam = (index, value) => {
@@ -24,7 +37,7 @@ function useFunction(pluginName, functionName) {
         setParams([...params])
     }
 
-    return { args, returns, outputs, setParams }
+    return { executeState, args, returns, outputs, params, setParam }
 }
 
 export default useFunction

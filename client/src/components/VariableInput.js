@@ -61,7 +61,6 @@ function IntInput({ defaultValue = 0, onChange, type }) {
         max={String(max)}
         step="1"
         onChange={onChange}
-        stringMode
     />
 }
 
@@ -84,7 +83,6 @@ function FloatInput({ defaultValue = 0, onChange, type }) {
         max={max}
         onChange={onChange}
         precision={100}
-        stringMode
     />
 }
 
@@ -97,7 +95,6 @@ function BoolInput({ defaultValue = false, onChange }) {
 }
 
 function VariableInput({ defaultValue, onChange, type }) {
-    console.log(type);
     switch (type) {
         case VariableType.Int:
         case VariableType.Int8:

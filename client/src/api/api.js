@@ -31,8 +31,8 @@ class api {
             this.listener = {}
             astilectron.onMessage((message) => {
                 const messageObject = JSON.parse(message)
-                if (this.listener.hasOwnProperty(message.route)) {
-                    for (const entry of Object.entries(this.listener[message.route])) {
+                if (this.listener.hasOwnProperty(messageObject.route)) {
+                    for (const entry of Object.entries(this.listener[messageObject.route])) {
                         entry[1](messageObject)
                     }
                 }
