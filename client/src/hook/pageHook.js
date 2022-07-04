@@ -43,8 +43,18 @@ function usePageHook() {
         setActivePage(page)
     }
 
+    const onRemoveFunctionPage = (pluginName, functionName) => {
+        const newPage = pages.filter(page => !(page.type === PageType.FUNCTION && page.pluginName === pluginName && page.functionName === functionName))
+        setPages(newPage)
+    }
 
-    return { activePage, pages, selectFuctionPage, selectVariablePage }
+    const onRemoveVariablePage = (pluginName) => {
+        const newPage = pages.filter(page => !(page.type === PageType.VARIABLE && page.pluginName === pluginName))
+        setPages(newPage)
+    }
+
+
+    return { activePage, pages, selectFuctionPage, selectVariablePage, onRemoveFunctionPage, onRemoveVariablePage }
 }
 
 export default usePageHook

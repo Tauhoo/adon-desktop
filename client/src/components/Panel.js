@@ -1,4 +1,5 @@
-import { PageHeader, Tabs, Tag } from "antd"
+import { Tabs, Tag } from "antd"
+import { CloseOutlined } from '@ant-design/icons'
 import styled from "styled-components"
 import { PageType } from "../hook/pageHook"
 import FunctionPanel from "./FunctionPanel"
@@ -45,7 +46,7 @@ function getTabKeyFromPage(page) {
     }
 }
 
-function PluginPanel({ activePage, pages, selectFuctionPage, selectVariablePage }) {
+function PluginPanel({ activePage, pages, selectFuctionPage, selectVariablePage, onRemoveFunctionPage, onRemoveVariablePage }) {
     if (activePage === null) {
         return null
     }
@@ -62,18 +63,38 @@ function PluginPanel({ activePage, pages, selectFuctionPage, selectVariablePage 
         }
     }
 
+    const onEdit = (key, action) => {
+        console.log(key, action);
+        if (action !== "remove") return
+        const keyData = key.split("/")
+        console.log(keyData);
+        switch (keyData[0]) {
+            case PageType.FUNCTION:
+                return onRemoveFunctionPage(keyData[1], keyData[2])
+            case PageType.VARIABLE:
+                return onRemoveVariablePage(keyData[1])
+            default:
+                return
+        }
+    }
+
+    const isPagesAvailable = pages.length !== 0
+    if (!isPagesAvailable) {
+        return <Container />
+    }
+
     return <Container>
-        <Tabs activeKey={getTabKeyFromPage(activePage)} onTabClick={onSelect} >
+        <Tabs hideAdd={true} activeKey={getTabKeyFromPage(activePage)} onTabClick={onSelect} type="editable-card" onEdit={onEdit}>
             {pages.map((page) => {
                 const tab = getTabFromPage(page)
                 const key = getTabKeyFromPage(page)
                 switch (page.type) {
                     case PageType.FUNCTION:
-                        return <TabPane tab={tab} key={key} >
+                        return <TabPane tab={tab} key={key} closable={true}>
                             <FunctionPanel functionName={page.functionName} pluginName={page.pluginName} />
                         </TabPane>
                     case PageType.VARIABLE:
-                        return <TabPane tab={tab} key={key}>
+                        return <TabPane tab={tab} key={key} closable={true}>
                             <VariablePanel pluginName={page.pluginName} />
                         </TabPane>
                     default:

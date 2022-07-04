@@ -17,12 +17,19 @@ border-width: 0px 1px 0px 0px;
 overflow-y: scroll;
 `
 
+const MenuButtonContainer = styled.div`
+padding: 10px 30px;
+border-style: solid;
+border-color:rgb(235, 237, 240) ;
+border-width: 0px 0px 1px 0px;
+`
+
 function PluginMenu({ onClickFunction, onClickVariable }) {
     const value = usePluginMenu()
     return <Container>
-        <div style={{ paddingTop: "20px", paddingBottom: "5px" }}>
+        <MenuButtonContainer>
             <CreatePluginPanelModal></CreatePluginPanelModal>
-        </div>
+        </MenuButtonContainer>
         <div style={{ width: "100%", height: "100%", overflowY: "scroll" }}>
             <Collapse ghost >
                 {value.map(name => {

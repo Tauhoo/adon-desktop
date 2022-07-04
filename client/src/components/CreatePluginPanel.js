@@ -122,8 +122,8 @@ export default CreatePluginPanel
 export function CreatePluginPanelModal() {
     const [visible, setVisible] = useState(false)
     return <>
-        <div style={{ height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Button type="primary" onClick={() => setVisible(true)}>Create plugin</Button>
+        <div style={{ height: "40px", display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+            <Button style={{ width: "100%" }} type="primary" onClick={() => setVisible(true)}>Create plugin</Button>
         </div>
         <Modal
             visible={visible}

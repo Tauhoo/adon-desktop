@@ -14,7 +14,7 @@ height: 100%;
 
 function App() {
   const { astilectron } = useAstilectron()
-  const { activePage, pages, selectFuctionPage, selectVariablePage } = usePageHook()
+  const { activePage, pages, selectFuctionPage, selectVariablePage, onRemoveFunctionPage, onRemoveVariablePage } = usePageHook()
   if (astilectron === null) {
     return null
   }
@@ -24,12 +24,15 @@ function App() {
       <Layout>
         <PluginMenu
           onClickFunction={selectFuctionPage}
-          onClickVariable={selectVariablePage}></PluginMenu>
+          onClickVariable={selectVariablePage}
+        />
         <Panel
           activePage={activePage}
           pages={pages}
           selectFuctionPage={selectFuctionPage}
           selectVariablePage={selectVariablePage}
+          onRemoveFunctionPage={onRemoveFunctionPage}
+          onRemoveVariablePage={onRemoveVariablePage}
         />
       </Layout>
     </Container>
