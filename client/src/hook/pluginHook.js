@@ -17,10 +17,19 @@ export function usePluginMenu() {
         setPluginMenu([...pluginMenu, message.data].sort())
     }
 
+    const onPluginDeleted = (message) => {
+        setPluginMenu(pluginMenu.filter(value => value !== message.data))
+    }
+
     useEffect(() => {
         initPluginMenu()
-        return plugin.onPluginAdded(onPluginAdded)
-    }, [])
+        const clearOnPluginAdded = plugin.onPluginAdded(onPluginAdded)
+        const clearOnPluginDeleted = plugin.onPluginDeleted(onPluginDeleted)
+        return () => {
+            clearOnPluginAdded()
+            clearOnPluginDeleted()
+        }
+    })
 
     return pluginMenu
 }

@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { message } from "antd"
+import { useEffect, useState } from "react"
+import plugin from "../api/plugin"
 export const PageType = {
     FUNCTION: "FUNCTION",
     VARIABLE: "VARIABLE"
@@ -48,7 +50,7 @@ function usePageHook() {
         setPages(newPage)
         if (newPage.length === 0) {
             setActivePage(null)
-        } else {
+        } else if (activePage.type === PageType.FUNCTION && activePage.pluginName === pluginName && activePage.functionName === functionName) {
             setActivePage(newPage[0])
         }
     }
@@ -58,11 +60,25 @@ function usePageHook() {
         setPages(newPage)
         if (newPage.length === 0) {
             setActivePage(null)
-        } else {
+        } else if (activePage.type === PageType.VARIABLE && activePage.pluginName === pluginName) {
             setActivePage(newPage[0])
         }
     }
 
+    const onRemovePlugin = message => {
+        const pluginName = message.data
+        const newPage = pages.filter(page => page.pluginName !== pluginName)
+        setPages(newPage)
+        if (newPage.length === 0) {
+            setActivePage(null)
+        } else if (activePage.pluginName === pluginName) {
+            setActivePage(newPage[0])
+        }
+    }
+
+    useEffect(() => {
+        return plugin.onPluginDeleted(onRemovePlugin)
+    })
 
     return { activePage, pages, selectFuctionPage, selectVariablePage, onRemoveFunctionPage, onRemoveVariablePage }
 }

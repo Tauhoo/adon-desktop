@@ -4,8 +4,8 @@ import reportWebVitals from './reportWebVitals';
 import { AstilectronProvider } from './provider/astilectronProvider';
 
 import App from './App';
-import './index.css';
 import "antd/dist/antd.css";
+import './index.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -27,6 +27,7 @@ class api {
     }
 
     listen = (route, callback) => {
+
         if (this.listener === null) {
             this.listener = {}
             astilectron.onMessage((message) => {

@@ -1,5 +1,4 @@
 import { Tabs, Tag } from "antd"
-import { CloseOutlined } from '@ant-design/icons'
 import styled from "styled-components"
 import { PageType } from "../hook/pageHook"
 import FunctionPanel from "./FunctionPanel"

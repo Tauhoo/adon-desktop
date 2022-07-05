@@ -5,6 +5,7 @@ import PluginMenu from './components/PluginMenu';
 import Panel from './components/Panel';
 import { useAstilectron } from './provider/astilectronProvider';
 import usePageHook from './hook/pageHook';
+import plugin from './api/plugin';
 
 const Layout = styled.div`
 display: grid;
@@ -13,11 +14,8 @@ height: 100%;
 `
 
 function App() {
-  const { astilectron } = useAstilectron()
   const { activePage, pages, selectFuctionPage, selectVariablePage, onRemoveFunctionPage, onRemoveVariablePage } = usePageHook()
-  if (astilectron === null) {
-    return null
-  }
+
   return (
     <Container>
       <Navbar></Navbar>
@@ -25,6 +23,7 @@ function App() {
         <PluginMenu
           onClickFunction={selectFuctionPage}
           onClickVariable={selectVariablePage}
+          onDeletePlugin={plugin.deletePlugin}
         />
         <Panel
           activePage={activePage}
@@ -39,4 +38,13 @@ function App() {
   );
 }
 
-export default App;
+
+function AstilectronApp() {
+  const { astilectron } = useAstilectron()
+  if (astilectron === null) {
+    return null
+  }
+  return <App />
+}
+
+export default AstilectronApp;

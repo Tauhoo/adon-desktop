@@ -32,8 +32,16 @@ class plugin {
         return api.send("service/execute-function", { plugin_name: pluginName, function_name: functionName, args })
     }
 
+    deletePlugin(pluginName) {
+        return api.send("service/delete-plugin", pluginName)
+    }
+
     onPluginAdded(callback) {
         return api.listen("route/plugin-added", callback)
+    }
+
+    onPluginDeleted(callback) {
+        return api.listen("route/plugin-deleted", callback)
     }
 
     onExecuteStateChange(callback) {

@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* overide antd */
+.ant-btn-dashed {
+  background-color: red;
+  border: none;
+  color: white;
+}
