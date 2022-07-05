@@ -10,6 +10,7 @@ import (
 
 type API interface {
 	PluginAdded(pluginName string) errors.Error
+	PluginDeleted(pluginName string) errors.Error
 	ExecutionStateChange(pluginName, function string, state adon.ExecuteState, info any) errors.Error
 }
 

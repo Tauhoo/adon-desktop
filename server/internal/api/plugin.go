@@ -10,6 +10,10 @@ func (a api) PluginAdded(pluginName string) errors.Error {
 	return a.send(messages.NewRequestMessage("route/plugin-added", pluginName))
 }
 
+func (a api) PluginDeleted(pluginName string) errors.Error {
+	return a.send(messages.NewRequestMessage("route/plugin-deleted", pluginName))
+}
+
 type ExecutionStateChangeEvent struct {
 	State string `json:"state"`
 	Info  any    `json:"info"`

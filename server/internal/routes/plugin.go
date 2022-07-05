@@ -92,3 +92,13 @@ var ExecuteFunction = func(service services.Service, m *astilectron.EventMessage
 		return messages.NewResponseMessage[any](nil)
 	}
 }
+
+var DeletePlugin = func(service services.Service, m *astilectron.EventMessage) any {
+	req, err := ReadEventMessage[string](m)
+	if err != nil {
+		return messages.NewResponseErrorMessage(err)
+	}
+
+	service.DeletePlugin(req.Data)
+	return messages.NewResponseMessage[any](nil)
+}

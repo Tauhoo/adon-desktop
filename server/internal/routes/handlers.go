@@ -8,4 +8,5 @@ var handlers = map[string]Handler{
 	"service/get-all-go-bin-path":  GetAllGoBinPath,
 	"service/get-function":         GetFunction,
 	"service/execute-function":     ExecuteFunction,
+	"service/delete-plugin":        DeletePlugin,
 }

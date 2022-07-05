@@ -2,6 +2,7 @@ package services
 
 import (
 	"os"
+	"path"
 	"reflect"
 
 	"github.com/Tauhoo/adon"
@@ -211,4 +212,16 @@ func (s service) LoadAllPlugin() {
 
 func (s service) GetAllGoBinPath() ([]string, errors.Error) {
 	return gocli.GetAllGoBin()
+}
+
+func (s service) DeletePlugin(name string) {
+	s.pluginManager.GetPluginStorage().Delete(name)
+
+	if rerr := os.Remove(path.Join(s.config.WorkSpaceDirectory, name)); rerr != nil {
+		logs.ErrorLogger.Printf("delete plugin fail - error: %#v\n", rerr.Error())
+	}
+
+	if err := s.api.PluginDeleted(name); err != nil {
+		logs.ErrorLogger.Printf("send plugin deleted event fail - error: %#v\n", err)
+	}
 }
