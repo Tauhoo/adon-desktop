@@ -43,7 +43,10 @@ export function useFunctionMenu(name) {
     const initFunctionMenu = async () => {
         try {
             const result = await plugin.getFunctionList(name)
-            setFunctionMenu(result.data)
+            setFunctionMenu(result.data.sort((a, b) => {
+                const sorted = [a.name, b.name].sort()
+                return sorted[0] === a.name ? -1 : 1
+            }))
         } catch (error) {
             console.log(error);
         }
