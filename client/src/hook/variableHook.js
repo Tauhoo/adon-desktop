@@ -13,13 +13,21 @@ function useVariable(pluginName) {
                 newVariableList.push(variable)
             }
         }
-        setVariableList(newVariableList)
+
+
+        setVariableList(newVariableList.sort((a, b) => {
+            const sorted = [a.name, b.name].sort()
+            return sorted[0] === a.name ? -1 : 1
+        }))
     }
 
     const initVariableList = async () => {
         try {
             const result = await plugin.getVariableList(pluginName)
-            setVariableList(result.data)
+            setVariableList(result.data.sort((a, b) => {
+                const sorted = [a.name, b.name].sort()
+                return sorted[0] === a.name ? -1 : 1
+            }))
         } catch (error) {
             console.log(error);
         }

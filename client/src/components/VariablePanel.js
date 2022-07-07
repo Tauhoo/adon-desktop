@@ -3,6 +3,7 @@ import useVariable from "../hook/variableHook"
 import { Breadcrumb, Typography, Card, Tag, Button } from "antd"
 import VariableInput from "./VariableInput"
 import plugin from "../api/plugin"
+import { useState } from "react"
 
 const ArgumentContainer = styled.div`
 display: grid;
@@ -23,11 +24,13 @@ const { Title } = Typography
 
 function VariablePanel({ pluginName }) {
     const { variableList, setVariable } = useVariable(pluginName)
+    const [loading, setLoading] = useState(false)
     const onSave = async () => {
+        setLoading(true)
+
         let variableMap = {}
         for (const variable of variableList) {
             variableMap = { ...variableMap, [variable.name]: variable.value }
-
         }
 
         try {
@@ -37,6 +40,7 @@ function VariablePanel({ pluginName }) {
             console.log(error);
         }
 
+        setLoading(false)
     }
     return <Container>
         <Breadcrumb>
@@ -56,7 +60,7 @@ function VariablePanel({ pluginName }) {
             </ArgumentContainer>
         </PanelContainer>
         <br />
-        <Button type="primary" style={{ width: "100%" }} onClick={onSave}>save</Button>
+        <Button type="primary" style={{ width: "100%" }} onClick={onSave} loading={loading}>save</Button>
     </Container>
 }
 
