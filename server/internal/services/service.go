@@ -13,6 +13,7 @@ type Service interface {
 	GetPluginNameList() []string
 	GetFunctionList(pluginName string) ([]Function, errors.Error)
 	GetVariableList(pluginName string) ([]Variable, errors.Error)
+	SetVariable(pluginName string, variableMap map[string]interface{}) errors.Error
 	GetFunction(pluginName string, functionName string) (Function, errors.Error)
 	DeletePlugin(name string)
 	ExecuteFunction(pluginName, functionName string, args []interface{}) errors.Error

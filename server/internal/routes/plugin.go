@@ -102,3 +102,21 @@ var DeletePlugin = func(service services.Service, m *astilectron.EventMessage) a
 	service.DeletePlugin(req.Data)
 	return messages.NewResponseMessage[any](nil)
 }
+
+type SetVariableInfo struct {
+	PluginName  string                 `json:"plugin_name"`
+	VariableMap map[string]interface{} `json:"variable_map"`
+}
+
+var SetVariable = func(service services.Service, m *astilectron.EventMessage) any {
+	req, err := ReadEventMessage[SetVariableInfo](m)
+	if err != nil {
+		return messages.NewResponseErrorMessage(err)
+	}
+
+	if err := service.SetVariable(req.Data.PluginName, req.Data.VariableMap); err != nil {
+		return messages.NewResponseErrorMessage(err)
+	} else {
+		return messages.NewResponseMessage[any](nil)
+	}
+}

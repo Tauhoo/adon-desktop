@@ -9,4 +9,5 @@ var handlers = map[string]Handler{
 	"service/get-function":         GetFunction,
 	"service/execute-function":     ExecuteFunction,
 	"service/delete-plugin":        DeletePlugin,
+	"service/set-variable":         SetVariable,
 }
