@@ -9,6 +9,7 @@ const { TabPane } = Tabs
 const Container = styled.div`
 padding: 20px 30px;
 width: calc(100vw - 300px);
+height: 100%;
 `
 
 function getTabFromPage(page) {

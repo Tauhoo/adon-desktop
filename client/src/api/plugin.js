@@ -36,6 +36,10 @@ class plugin {
         return api.send("service/delete-plugin", pluginName)
     }
 
+    setVariables(pluginName, variableMap) {
+        return api.send("service/set-variable", { plugin_name: pluginName, variable_map: variableMap })
+    }
+
     onPluginAdded(callback) {
         return api.listen("route/plugin-added", callback)
     }

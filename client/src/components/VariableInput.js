@@ -96,7 +96,7 @@ function StringInput({ defaultValue = "", onChange, value }) {
 }
 
 function BoolInput({ defaultValue = false, onChange, value }) {
-    return <Switch defaultChecked={defaultValue} onChange={({ target }) => onChange(target.checked)} value={value} />
+    return <Switch defaultChecked={defaultValue} onChange={(value) => onChange(value)} checked={value} />
 }
 
 function VariableInput({ defaultValue, onChange, type, value }) {

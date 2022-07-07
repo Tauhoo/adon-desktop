@@ -23,13 +23,16 @@ export function usePluginMenu() {
 
     useEffect(() => {
         initPluginMenu()
+    }, [])
+
+    useEffect(() => {
         const clearOnPluginAdded = plugin.onPluginAdded(onPluginAdded)
         const clearOnPluginDeleted = plugin.onPluginDeleted(onPluginDeleted)
         return () => {
             clearOnPluginAdded()
             clearOnPluginDeleted()
         }
-    })
+    }, [pluginMenu])
 
     return pluginMenu
 }
