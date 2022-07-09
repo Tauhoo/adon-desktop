@@ -27,6 +27,7 @@ function useFunction(pluginName, functionName) {
     useEffect(() => {
         initFunction()
         return plugin.onExecuteStateChange(({ data }) => {
+            if (data.state != ExecuteState.ExecuteDone || data.plugin_name !== pluginName || data.function_name !== functionName) return
             setExecuteState(data.state)
             setOutput(data.info)
         })

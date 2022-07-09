@@ -27,6 +27,7 @@ function FunctionPanel({ functionName, pluginName }) {
         for (const param of params) {
             if (param === null) return
         }
+        console.log(pluginName, functionName);
         await plugin.executeFunction(pluginName, functionName, params)
     }
 
