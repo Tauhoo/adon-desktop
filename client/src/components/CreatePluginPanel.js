@@ -28,7 +28,7 @@ display: flex;
 align-items: center;
 `
 
-function CreatePluginPanel() {
+function CreatePluginPanel({ onBuildSucess }) {
     const [isBuilding, setIsBuilding] = useState(false)
     const [goBinPath, setGoBinPath] = useState(null)
     const [projectPath, setProjectPath] = useState(null)
@@ -87,6 +87,7 @@ function CreatePluginPanel() {
         try {
             await plugin.addNewPlugin(projectPath, goBinPath, name)
             setName("")
+            if (onBuildSucess) onBuildSucess()
         } catch (error) {
             setWarning(`build plugin fail code: ${error.code}, info: ${error.data}`)
         }
@@ -132,7 +133,7 @@ export function CreatePluginPanelModal() {
             title="Create plugin"
             width="800px"
         >
-            <CreatePluginPanel></CreatePluginPanel>
+            <CreatePluginPanel onBuildSucess={() => setVisible(false)}></CreatePluginPanel>
         </Modal>
     </>
 } 
