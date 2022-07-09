@@ -1,9 +1,10 @@
 import styled from "styled-components"
-import { Breadcrumb, Card, Typography, Tag, Divider, Button } from "antd"
+import { Breadcrumb, Card, Typography, Tag, Divider, Button, Alert } from "antd"
 import { LoadingOutlined } from '@ant-design/icons'
 import useFunction, { ExecuteState } from "../hook/functionHook"
 import VariableInput from "./VariableInput"
 import plugin from "../api/plugin"
+import { useState } from "react"
 
 const ArgumentContainer = styled.div`
 display: grid;
@@ -23,11 +24,12 @@ const { Title } = Typography
 
 function FunctionPanel({ functionName, pluginName }) {
     const { executeState, args, returns, outputs, params, setParam } = useFunction(pluginName, functionName)
+    const [errorMsg, setErrorMsg] = useState(null)
     const onExecute = async () => {
         for (const param of params) {
-            if (param === null) return
+            if (param === null) return setErrorMsg("some parameter is empty")
         }
-        console.log(pluginName, functionName);
+        setErrorMsg(null)
         await plugin.executeFunction(pluginName, functionName, params)
     }
 
@@ -44,7 +46,10 @@ function FunctionPanel({ functionName, pluginName }) {
             {args.map((type, index) => {
                 return <Card key={String(index)}>
                     <Title level={4}>Arg {index} <Tag color="green">{type}</Tag></Title>
-                    <VariableInput key={String(index)} type={type} value={params[index]} onChange={(value) => setParam(index, value)} />
+                    <VariableInput key={String(index)} type={type} value={params[index]} onChange={(value) => {
+                        console.log(value);
+                        setParam(index, value)
+                    }} />
                 </Card>
             })}
         </ArgumentContainer>
@@ -52,6 +57,8 @@ function FunctionPanel({ functionName, pluginName }) {
         <div style={{ display: "flex", justifyContent: "center" }}>
             <Button type="primary" style={{ width: "100%" }} onClick={onExecute}>Execute</Button>
         </div>
+        <br />
+        {errorMsg !== null && <Alert type="error" description={errorMsg} />}
         <br />
         <br />
         <Title level={3}>Return</Title>
