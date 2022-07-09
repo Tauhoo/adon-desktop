@@ -3,7 +3,6 @@ package services
 import (
 	"os"
 	"path"
-	"reflect"
 
 	"github.com/Tauhoo/adon"
 	"github.com/Tauhoo/adon-desktop/internal/errors"
@@ -42,8 +41,36 @@ func (s service) AddNewPlugin(pluginBuildInfo PluginBuildInfo) errors.Error {
 		return errors.New(LoadPluginFailCode, err.Error())
 	}
 
-	if err := s.api.PluginAdded(targetFilename); err != nil {
+	pluginName := path.Base(targetFilename)
+
+	if err := s.api.PluginAdded(pluginName); err != nil {
 		logs.ErrorLogger.Printf("send plugin added event fail - error: %#v\n", err)
+	}
+
+	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
+	if !ok {
+		return errors.NewWithoutData(PluginNotFoundCode)
+	}
+
+	for _, executorRecord := range pluginRecord.Value.GetExecutorStorage().GetList() {
+		stateEventPublisher := executorRecord.Value.GetStateEventPubliser()
+		pluginName := pluginRecord.Name
+		executorName := executorRecord.Name
+		fn := func(state adon.ExecuteState, info any) {
+			s.api.ExecutionStateChange(pluginName, executorName, state, info)
+		}
+		stateEventPublisher.Listen(adon.ExecuteDone, func(state adon.ExecuteState, info any) {
+			variables := info.([]adon.Variable)
+			infos := []any{}
+			for _, variable := range variables {
+				infos = append(infos, variable.GetValue().Interface())
+			}
+
+			s.api.ExecutionStateChange(pluginName, executorName, state, infos)
+		})
+		stateEventPublisher.Listen(adon.ExecuteRunning, fn)
+		stateEventPublisher.Listen(adon.ExecuteError, fn)
+		stateEventPublisher.Listen(adon.ExecuteIdle, fn)
 	}
 
 	return nil
@@ -59,131 +86,6 @@ func (s service) GetPluginNameList() []string {
 	return names
 }
 
-type Function struct {
-	Name        string   `json:"name"`
-	ArgTypes    []string `json:"arg_types"`
-	ReturnTypes []string `json:"return_types"`
-}
-
-func (s service) GetFunctionList(pluginName string) ([]Function, errors.Error) {
-	record, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
-	if !ok {
-		return nil, errors.NewWithoutData(PluginNotFoundCode)
-	}
-
-	functionList := []Function{}
-	for _, functionRecord := range record.Value.GetExecutorStorage().GetList() {
-
-		argTypes := []string{}
-		returnTypes := []string{}
-
-		for _, param := range functionRecord.Value.GetFunction().GetParamList() {
-			argTypes = append(argTypes, param.String())
-		}
-
-		for _, returnValue := range functionRecord.Value.GetFunction().GetReturnList() {
-			returnTypes = append(returnTypes, returnValue.String())
-		}
-
-		functionList = append(functionList, Function{
-			Name:        functionRecord.Name,
-			ArgTypes:    argTypes,
-			ReturnTypes: returnTypes,
-		})
-	}
-
-	return functionList, nil
-}
-
-func (s service) GetFunction(pluginName string, functionName string) (Function, errors.Error) {
-	logs.InfoLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
-	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
-	if !ok {
-		logs.ErrorLogger.Printf("not found plugin %s\n", pluginName)
-		return Function{}, errors.NewWithoutData(PluginNotFoundCode)
-	}
-
-	functionRecord, ok := pluginRecord.Value.GetExecutorStorage().Find(functionName)
-	if !ok {
-		logs.ErrorLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
-		return Function{}, errors.NewWithoutData(FunctionNotFoundCode)
-	}
-
-	argTypeList := []string{}
-	for _, argKind := range functionRecord.Value.GetFunction().GetParamList() {
-		argTypeList = append(argTypeList, argKind.String())
-	}
-
-	returnTypeList := []string{}
-	for _, returnKind := range functionRecord.Value.GetFunction().GetReturnList() {
-		returnTypeList = append(returnTypeList, returnKind.String())
-	}
-
-	return Function{
-		Name:        functionRecord.Name,
-		ArgTypes:    argTypeList,
-		ReturnTypes: returnTypeList,
-	}, nil
-}
-
-type Variable struct {
-	Name  string      `json:"name"`
-	Type  string      `json:"type"`
-	Value interface{} `json:"value"`
-}
-
-func (s service) GetVariableList(pluginName string) ([]Variable, errors.Error) {
-	record, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
-	if !ok {
-		return nil, errors.NewWithoutData(PluginNotFoundCode)
-	}
-
-	variableList := []Variable{}
-	for _, varRecord := range record.Value.GetVariableStorage().GetList() {
-		variableList = append(variableList, Variable{
-			Name:  varRecord.Name,
-			Type:  varRecord.Value.GetValue().Kind().String(),
-			Value: varRecord.Value.GetValue().Interface(),
-		})
-	}
-
-	return variableList, nil
-}
-
-func (s service) ExecuteFunction(pluginName, functionName string, args []interface{}) errors.Error {
-	logs.InfoLogger.Printf("start execute function - pluginName: %s, functionName: %s\n", pluginName, functionName)
-	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
-	if !ok {
-		logs.ErrorLogger.Printf("not found plugin %s\n", pluginName)
-		return errors.NewWithoutData(PluginNotFoundCode)
-	}
-
-	functionRecord, ok := pluginRecord.Value.GetExecutorStorage().Find(functionName)
-	if !ok {
-		logs.ErrorLogger.Printf("find function %s in plugin %s\n", functionName, pluginName)
-		return errors.NewWithoutData(FunctionNotFoundCode)
-	}
-
-	argVariables := []adon.Variable{}
-
-	params := functionRecord.Value.GetFunction().GetParamList()
-	functionType := functionRecord.Value.GetFunction().GetValue().Type()
-
-	if len(params) != len(args) {
-		return errors.NewWithoutData(FunctionArgsInvalidCode)
-	}
-
-	for index, _ := range params {
-		reflectValue := reflect.ValueOf(args[index]).Convert(functionType.In(index))
-		pointerReflectValue := reflect.New(reflectValue.Type())
-		pointerReflectValue.Elem().Set(reflectValue)
-		argVariables = append(argVariables, adon.NewVariableFromPointer(pointerReflectValue))
-	}
-
-	logs.InfoLogger.Printf("execute function - pluginName: %s, functionName: %s\n", pluginName, functionName)
-	functionRecord.Value.Execute(argVariables...)
-	return nil
-}
 func (s service) LoadAllPlugin() {
 	if err := s.pluginManager.LoadPluginFromFolder(s.config.WorkSpaceDirectory); err != nil {
 		logs.ErrorLogger.Println(err.Error())
@@ -194,8 +96,10 @@ func (s service) LoadAllPlugin() {
 	for _, pluginRecord := range s.pluginManager.GetPluginStorage().GetList() {
 		for _, executorRecord := range pluginRecord.Value.GetExecutorStorage().GetList() {
 			stateEventPublisher := executorRecord.Value.GetStateEventPubliser()
+			pluginName := pluginRecord.Name
+			functionName := executorRecord.Name
 			fn := func(state adon.ExecuteState, info any) {
-				s.api.ExecutionStateChange(pluginRecord.Name, executorRecord.Name, state, info)
+				s.api.ExecutionStateChange(pluginName, functionName, state, info)
 			}
 			stateEventPublisher.Listen(adon.ExecuteDone, func(state adon.ExecuteState, info any) {
 				variables := info.([]adon.Variable)
@@ -203,8 +107,7 @@ func (s service) LoadAllPlugin() {
 				for _, variable := range variables {
 					infos = append(infos, variable.GetValue().Interface())
 				}
-
-				s.api.ExecutionStateChange(pluginRecord.Name, executorRecord.Name, state, infos)
+				s.api.ExecutionStateChange(pluginName, functionName, state, infos)
 			})
 			stateEventPublisher.Listen(adon.ExecuteRunning, fn)
 			stateEventPublisher.Listen(adon.ExecuteError, fn)
@@ -227,30 +130,4 @@ func (s service) DeletePlugin(name string) {
 	if err := s.api.PluginDeleted(name); err != nil {
 		logs.ErrorLogger.Printf("send plugin deleted event fail - error: %#v\n", err)
 	}
-}
-
-func (s service) SetVariable(pluginName string, variableMap map[string]interface{}) errors.Error {
-	pluginRecord, ok := s.pluginManager.GetPluginStorage().Find(pluginName)
-	if !ok {
-		logs.ErrorLogger.Printf("not found plugin %s\n", pluginName)
-		return errors.NewWithoutData(PluginNotFoundCode)
-	}
-
-	for key, value := range variableMap {
-		variableRecord, ok := pluginRecord.Value.GetVariableStorage().Find(key)
-		if !ok {
-			logs.ErrorLogger.Printf("not found variable %s in plugin %s\n", key, pluginName)
-			continue
-		}
-
-		varType := variableRecord.Value.GetValue().Type()
-		reflectVar := reflect.ValueOf(value)
-		if reflectVar.CanConvert(varType) {
-			variableRecord.Value.GetValue().Set(reflectVar.Convert(varType))
-		} else {
-			logs.ErrorLogger.Printf("cannot convert variable %s to %s kind in plugin %s\n", key, reflectVar.Kind().String(), pluginName)
-		}
-	}
-
-	return nil
 }

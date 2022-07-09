@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/Tauhoo/adon"
 	"github.com/Tauhoo/adon-desktop/internal/config"
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"github.com/Tauhoo/adon-desktop/internal/routes"
 	"github.com/Tauhoo/adon-desktop/internal/services"
 	"github.com/asticode/go-astikit"
@@ -44,7 +44,7 @@ func main() {
 
 	if _, err := os.Stat(conf.WorkSpaceDirectory); os.IsNotExist(err) {
 		if err := os.Mkdir(conf.WorkSpaceDirectory, 0777); err != nil {
-			fmt.Println(err.Error())
+			logs.ErrorLogger.Panicln("create work space directory fail - error: ", err.Error())
 			return
 		}
 	}
