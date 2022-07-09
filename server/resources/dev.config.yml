@@ -1,8 +1,8 @@
 env: dev
 client-location: "http://localhost:3000"
 app-name: "adon"
-app-icon-default-path: ""
-app-icon-darwin-path: ""
+app-icon-default-path: "/Users/tauhoo/Documents/adon-desktop/server/resources/logo.png"
+app-icon-darwin-path: "/Users/tauhoo/Documents/adon-desktop/server/resources/logo.icns"
 work-space-directory: "/Users/tauhoo/Documents/adon-desktop/server/data"
 base-directory-path: "/Users/tauhoo/Documents/adon-desktop/server/dependencies"
 home-path: "/Users/tauhoo"
