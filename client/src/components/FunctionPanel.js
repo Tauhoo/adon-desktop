@@ -18,6 +18,7 @@ border-radius:3px;
 padding: 10px 30px;
 background-color: #ecf0f1;
 margin-bottom: 15px;
+white-space: pre-wrap;
 `
 
 const { Title } = Typography

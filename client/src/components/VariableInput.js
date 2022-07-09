@@ -1,4 +1,5 @@
 import { Switch, InputNumber, Input } from 'antd';
+const { TextArea } = Input
 
 export const VariableType = {
     Bool: "bool",
@@ -92,7 +93,13 @@ function FloatInput({ defaultValue = 0, onChange, type, value }) {
 }
 
 function StringInput({ defaultValue = "", onChange, value }) {
-    return <Input style={{ width: "100%" }} defaultValue={defaultValue} onChange={({ target }) => onChange(target.value)} value={value}></Input>
+    return <TextArea
+        style={{ width: "100%" }}
+        defaultValue={defaultValue}
+        onChange={({ target }) => onChange(target.value)}
+        value={value}
+        autoSize={{ minRows: 1 }}
+    ></TextArea>
 }
 
 function BoolInput({ defaultValue = false, onChange, value }) {
