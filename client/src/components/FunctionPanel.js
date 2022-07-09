@@ -6,6 +6,12 @@ import VariableInput from "./VariableInput"
 import plugin from "../api/plugin"
 import { useState } from "react"
 
+const Container = styled.div`
+width: 100%;
+height: calc(100vh - 64px - 40.5px - 40px);
+overflow-y: scroll;
+`
+
 const ArgumentContainer = styled.div`
 display: grid;
 grid-auto-rows: max-content;
@@ -34,7 +40,7 @@ function FunctionPanel({ functionName, pluginName }) {
         await plugin.executeFunction(pluginName, functionName, params)
     }
 
-    return <>
+    return <Container>
         <Breadcrumb>
             <Breadcrumb.Item>{pluginName}</Breadcrumb.Item>
             <Breadcrumb.Item>{functionName}</Breadcrumb.Item>
@@ -75,7 +81,7 @@ function FunctionPanel({ functionName, pluginName }) {
                 </Card>
             })}
         </ArgumentContainer>
-    </>
+    </Container>
 }
 
 export default FunctionPanel

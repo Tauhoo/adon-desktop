@@ -17,7 +17,7 @@ const PanelContainer = styled.div`
 `
 
 const Container = styled.div`
-height: 100%;
+height: calc(100vh - 64px - 40.5px - 40px);
 `
 
 const { Title } = Typography

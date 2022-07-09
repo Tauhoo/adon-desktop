@@ -9,7 +9,7 @@ const { Panel } = Collapse;
 
 const Container = styled.div`
 width: 300px;
-height: calc(100vh - 70px);
+height: calc(100vh - 64px);
 display: grid;
 grid-template-rows: max-content 1fr;
 border-style: solid;
