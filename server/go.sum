@@ -1,15 +1,10 @@
-github.com/Tauhoo/adon v0.0.0-20220626075346-0303ca2a4ebf h1:yZrncNhPfeVcNAeanxawDF3QLgCA/Cb29UiW0S4AFqA=
-github.com/Tauhoo/adon v0.0.0-20220626075346-0303ca2a4ebf/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
-github.com/Tauhoo/adon v0.0.0-20220630113526-58363e870bc6 h1:i/4IkmYV4kQI4+7+iBfbFs0kIeCSfd/geJfilBPpoXg=
-github.com/Tauhoo/adon v0.0.0-20220630113526-58363e870bc6/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
-github.com/Tauhoo/adon v0.0.0-20220630142023-eb7d9c495c6d h1:qKjJyhbGFT9Id8/bw8NIQGl7PlVh7VydHhvvy4sVZhg=
-github.com/Tauhoo/adon v0.0.0-20220630142023-eb7d9c495c6d/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
 github.com/asticode/go-astikit v0.29.1 h1:w27sLYXK84mDwArf/Vw1BiD5dfD5PBDB+iHoIcpYq0w=
 github.com/asticode/go-astikit v0.29.1/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
 github.com/asticode/go-astilectron v0.29.0 h1:oeceXo55BwcOWUMF/9FHfURBCORt7tgMwh7zeYyFGj0=
 github.com/asticode/go-astilectron v0.29.0/go.mod h1:o7wZ7KDr3XH3xcEwcxfpWzNVf63JsMKtif/6IP4mpHk=
-github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

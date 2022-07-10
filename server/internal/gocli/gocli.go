@@ -12,8 +12,16 @@ import (
 
 var goBinMatcher = regexp.MustCompile(`^go([1-9](.[0-9]{1,2}){0,2})?$`)
 
-func GetGOPATH() (string, errors.Error) {
-	if result, err := command.Run("go", []string{"env", "GOPATH"}); err != nil {
+func GetGOVERSION(binPath string) (string, errors.Error) {
+	if result, err := command.Run(binPath, []string{"env", "GOVERSION"}); err != nil {
+		return "", err
+	} else {
+		return strings.Trim(result, " \n"), nil
+	}
+}
+
+func GetGOPATH(binPath string) (string, errors.Error) {
+	if result, err := command.Run(binPath, []string{"env", "GOPATH"}); err != nil {
 		return "", err
 	} else {
 		return strings.Trim(result, " \n"), nil
@@ -29,7 +37,7 @@ func GetAllGoBin() ([]string, errors.Error) {
 		binaries = append(binaries, strings.Trim(result, " \n"))
 	}
 
-	gopath, err := GetGOPATH()
+	gopath, err := GetGOPATH("go")
 	if err != nil {
 		return nil, err
 	}
