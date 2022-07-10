@@ -5,7 +5,7 @@ client-dev: ./client/node_modules
 	npm start --prefix ./client 
 
 server-dev: 
-	go1.18.3 run -ldflags="-X main.env=dev" *.go 
+	ENV=dev go1.18.3 run main.go 
 
 out:
 	mkdir out
@@ -14,10 +14,15 @@ out/html: out ./client/node_modules
 	npm run build --prefix ./client
 	mv ./client/build ./out/html
 
-out/app:
+out/app: out/html
+	go1.18.3 mod tidy
 	astilectron-bundler
+	./build.sh
 	rm -rf temp
 	rm bind_*
+	rm windows.syso
+
+all: out/app
 
 clear: out
 	rm -rf out

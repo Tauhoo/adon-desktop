@@ -14,8 +14,8 @@ import (
 )
 
 func main() {
-
-	conf, err := config.New()
+	env := os.Getenv("ENV")
+	conf, err := config.New(env)
 	if err != nil {
 		panic(err)
 	}
@@ -51,20 +51,28 @@ func main() {
 
 	job := adon.NewJob()
 	job.Start()
+	logs.InfoLogger.Printf("start adon job")
 	defer job.Stop()
+
+	logs.InfoLogger.Printf("init adon plugin manager")
 	pluginManager := adon.NewPluginManager(job)
+
+	logs.InfoLogger.Printf("load plugin")
 	service := services.New(pluginManager, window, conf)
 	service.LoadAllPlugin()
 
+	logs.InfoLogger.Printf("regist route")
 	routes.Regist(service, window)
 
+	logs.InfoLogger.Printf("create window")
 	window.Create()
 	defer window.Close()
 
 	if conf.Env == config.DevEnv {
+		logs.InfoLogger.Printf("open dev tools")
 		window.OpenDevTools()
 	}
 
-	// Blocking pattern
+	logs.InfoLogger.Printf("start success")
 	astilectronInstance.Wait()
 }

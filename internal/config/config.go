@@ -4,18 +4,18 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 	"gopkg.in/yaml.v3"
 )
 
 type Env = string
 
-const (
-	DevEnv  = "dev"
-	ProdEnv = "prod"
+var (
+	DevEnv  Env = "dev"
+	ProdEnv Env = "prod"
 )
-
-var env = DevEnv
 
 type Config struct {
 	Env                Env    `yaml:"env"`
@@ -29,7 +29,24 @@ type Config struct {
 	WorkSpaceDirectory string `yaml:"work-space-directory"`
 }
 
-func NewFromFile(filePath string) (Config, error) {
+func GetBinaryDirectory(env Env) (string, error) {
+	if env == DevEnv {
+		currentDir, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		return currentDir, nil
+	} else {
+		ex, err := os.Executable()
+		if err != nil {
+			return "", err
+		}
+		exPath := filepath.Dir(ex)
+		return exPath, nil
+	}
+}
+
+func NewFromFile(execDir, filePath string) (Config, error) {
 	raw, err := os.ReadFile(filePath)
 	if err != nil {
 		return Config{}, err
@@ -40,31 +57,35 @@ func NewFromFile(filePath string) (Config, error) {
 		return Config{}, err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return Config{}, err
-	}
+	logs.InfoLogger.Printf("current directory - %s\n", execDir)
 
 	if _, err := url.ParseRequestURI(config.ClientLocation); err != nil {
-		config.ClientLocation = path.Join(currentDir, config.ClientLocation)
+		logs.ErrorLogger.Printf("parse url fail - %s\n", err.Error())
+		config.ClientLocation = path.Join(execDir, config.ClientLocation)
 	}
 
-	config.AppIconDarwinPath = path.Join(currentDir, config.AppIconDarwinPath)
-	config.AppIconDefaultPath = path.Join(currentDir, config.AppIconDefaultPath)
-	config.WorkSpaceDirectory = path.Join(currentDir, config.WorkSpaceDirectory)
-	config.BaseDirectoryPath = path.Join(currentDir, config.BaseDirectoryPath)
-
+	config.AppIconDarwinPath = path.Join(execDir, config.AppIconDarwinPath)
+	config.AppIconDefaultPath = path.Join(execDir, config.AppIconDefaultPath)
+	config.WorkSpaceDirectory = path.Join(execDir, config.WorkSpaceDirectory)
+	config.BaseDirectoryPath = path.Join(execDir, config.BaseDirectoryPath)
+	logs.InfoLogger.Printf("config value - %#v\n", config)
 	return config, nil
 
 }
 
-func New() (Config, error) {
+func New(env string) (Config, error) {
+	currentDir, err := GetBinaryDirectory(env)
+	if err != nil {
+		return Config{}, err
+	}
+
+	logs.InfoLogger.Printf("config value env (%s, %s) - %s\n", ProdEnv, DevEnv, env)
 	switch env {
-	case ProdEnv:
-		return NewFromFile("resources/prod.config.yml")
 	case DevEnv:
+		return NewFromFile(currentDir, path.Join(currentDir, "resources/dev.config.yml"))
+	case ProdEnv:
 		fallthrough
 	default:
-		return NewFromFile("resources/dev.config.yml")
+		return NewFromFile(currentDir, path.Join(currentDir, "resources/prod.config.yml"))
 	}
 }
