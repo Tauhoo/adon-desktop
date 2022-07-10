@@ -1,7 +1,9 @@
 package config
 
 import (
+	"net/url"
 	"os"
+	"path"
 
 	"gopkg.in/yaml.v3"
 )
@@ -25,11 +27,10 @@ type Config struct {
 	VersionAstilectron string `yaml:"version-astilectron"`
 	VersionElectron    string `yaml:"version-electron"`
 	WorkSpaceDirectory string `yaml:"work-space-directory"`
-	HomePath           string `yaml:"home-path"`
 }
 
-func NewFromFile(path string) (Config, error) {
-	raw, err := os.ReadFile(path)
+func NewFromFile(filePath string) (Config, error) {
+	raw, err := os.ReadFile(filePath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -38,6 +39,20 @@ func NewFromFile(path string) (Config, error) {
 	if err := yaml.Unmarshal(raw, &config); err != nil {
 		return Config{}, err
 	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return Config{}, err
+	}
+
+	if _, err := url.ParseRequestURI(config.ClientLocation); err != nil {
+		config.ClientLocation = path.Join(currentDir, config.ClientLocation)
+	}
+
+	config.AppIconDarwinPath = path.Join(currentDir, config.AppIconDarwinPath)
+	config.AppIconDefaultPath = path.Join(currentDir, config.AppIconDefaultPath)
+	config.WorkSpaceDirectory = path.Join(currentDir, config.WorkSpaceDirectory)
+	config.BaseDirectoryPath = path.Join(currentDir, config.BaseDirectoryPath)
 
 	return config, nil
 

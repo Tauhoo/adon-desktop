@@ -1,0 +1,12 @@
+{
+  "app_name": "adon",
+  "icon_path_darwin": "resources/logo.icns",
+  "icon_path_linux": "resources/logo.png",
+  "icon_path_windows": "resources/logo.ico",
+  "version_electron": "19.0.0",
+  "version_astilectron": "0.55.0",
+  "go_binary_path": "go1.18.3",
+  "resources_path": "resources",
+  "working_directory_path": "temp",
+  "output_path": "out/app"
+}

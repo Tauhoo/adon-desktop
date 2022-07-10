@@ -1,0 +1,9 @@
+env: dev
+client-location: "html"
+app-name: "adon"
+app-icon-default-path: "resources/logo.png"
+app-icon-darwin-path: "resources/logo.icns"
+work-space-directory: "data"
+base-directory-path: "dependencies"
+version-astilectron: "0.55.0"
+version-electron: "19.0.0"

@@ -1,1 +1,6 @@
 out
+dependencies
+plugins
+data
+bind_*
+temp

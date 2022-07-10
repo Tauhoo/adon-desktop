@@ -5,21 +5,19 @@ client-dev: ./client/node_modules
 	npm start --prefix ./client 
 
 server-dev: 
-	cd ./server && go1.18.3 run -ldflags="-X main.env=dev" *.go 
+	go1.18.3 run -ldflags="-X main.env=dev" *.go 
 
-out: 
+out:
 	mkdir out
 
-out/client: out
+out/html: out ./client/node_modules
 	npm run build --prefix ./client
-	mv ./client/build ./out/client
+	mv ./client/build ./out/html
 
-out/server: out
-	mkdir out/server
-	cd ./server && go1.18.3 build -o run main.go 
-	mv server/run out/server/run
+out/app:
+	astilectron-bundler
+	rm -rf temp
+	rm bind_*
 
-all: out/client out/server
-
-clean: out
-	rm -rf ./out
+clear: out
+	rm -rf out
