@@ -5,7 +5,7 @@ client-dev: ./client/node_modules
 	npm start --prefix ./client 
 
 server-dev: 
-	ENV=dev go1.18.3 run main.go 
+	ADON_ENV=dev go1.18.3 run main.go
 
 out:
 	mkdir out

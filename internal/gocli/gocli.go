@@ -1,13 +1,15 @@
 package gocli
 
 import (
-	"io/ioutil"
-	"path"
+	"fmt"
+	"os"
+	"os/exec"
 	"regexp"
 	"strings"
 
 	"github.com/Tauhoo/adon-desktop/internal/command"
 	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 )
 
 var goBinMatcher = regexp.MustCompile(`^go([1-9](.[0-9]{1,2}){0,2})?$`)
@@ -28,31 +30,40 @@ func GetGOPATH(binPath string) (string, errors.Error) {
 	}
 }
 
-func GetAllGoBin() ([]string, errors.Error) {
-	binaries := []string{}
-
-	if result, err := command.Run("which", []string{"go"}); err != nil {
-		return nil, err
-	} else {
-		binaries = append(binaries, strings.Trim(result, " \n"))
+func GetRealPath() (string, errors.Error) {
+	home := command.GetUserHomeDir()
+	bash := "source %s/.profile; source %s/.bash_profile; source %s/.zshrc; echo $PATH"
+	bash = fmt.Sprintf(bash, home, home, home)
+	result, err := command.Run("bash", []string{"-c", bash})
+	if err != nil {
+		logs.InfoLogger.Printf("find path fail - error: %#v\n", err)
+		return "", err
 	}
+	return strings.Trim(result, " \n"), nil
+}
 
-	gopath, err := GetGOPATH("go")
+func GetAllGoBin() ([]string, errors.Error) {
+	result, err := GetRealPath()
 	if err != nil {
 		return nil, err
 	}
 
-	gopath = path.Join(gopath, "bin")
-	files, rawerr := ioutil.ReadDir(gopath)
-	if rawerr != nil {
-		return nil, errors.New(ReadDirFailCode, rawerr.Error())
+	if err := os.Setenv("PATH", result); err != nil {
+		return nil, errors.New(SetPATHEnvFailCode, err.Error())
 	}
 
-	for _, file := range files {
-		filename := file.Name()
-		if goBinMatcher.MatchString(filename) {
-			binaries = append(binaries, path.Join(gopath, filename))
-		}
+	binaries := []string{}
+
+	if binPath, err := exec.LookPath("go"); err != nil {
+		logs.ErrorLogger.Printf("look for go fail - error: %#v", err)
+	} else {
+		binaries = append(binaries, binPath)
+	}
+
+	if binPath, err := exec.LookPath("go1.18.3"); err != nil {
+		logs.ErrorLogger.Printf("look for go1.18.3 fail - error: %#v", err)
+	} else {
+		binaries = append(binaries, binPath)
 	}
 
 	return binaries, nil

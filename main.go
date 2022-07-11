@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	env := os.Getenv("ENV")
+	env := os.Getenv("ADON_ENV")
 	conf, err := config.New(env)
 	if err != nil {
 		panic(err)
@@ -64,7 +64,7 @@ func main() {
 	logs.InfoLogger.Printf("regist route")
 	routes.Regist(service, window)
 
-	logs.InfoLogger.Printf("create window")
+	logs.InfoLogger.Printf("create window at %s", conf.ClientLocation)
 	window.Create()
 	defer window.Close()
 
