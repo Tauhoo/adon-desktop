@@ -54,7 +54,7 @@ function CreatePluginPanel({ onBuildSucess }) {
     const onChangeFile = (event) => {
         const files = event.target.files;
         const filterFiles = [...files].filter(value => value.name === "go.mod")
-        if (filterFiles.length != 1) {
+        if (filterFiles.length !== 1) {
             setProjectPath(null)
             return
         }
