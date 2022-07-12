@@ -101,7 +101,7 @@ func GetRealEnv() (map[string]string, errors.Error) {
 }
 
 func GetRealPath() (string, errors.Error) {
-	if runtime.GOOS != "window" {
+	if runtime.GOOS != "windows" {
 		env, err := GetRealEnv()
 		if err != nil {
 			return "", err
