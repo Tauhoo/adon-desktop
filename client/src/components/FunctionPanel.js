@@ -53,10 +53,9 @@ function FunctionPanel({ functionName, pluginName }) {
             {args.map((type, index) => {
                 return <Card key={String(index)}>
                     <Title level={4}>Arg {index} <Tag color="green">{type}</Tag></Title>
-                    <VariableInput key={String(index)} type={type} value={params[index]} onChange={(value) => {
-                        console.log(value);
+                    <VariableInput key={String(index)} type={type} value={params[index]} onChange={(value) =>
                         setParam(index, value)
-                    }} />
+                    } />
                 </Card>
             })}
         </ArgumentContainer>

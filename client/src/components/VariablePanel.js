@@ -35,7 +35,6 @@ function VariablePanel({ pluginName }) {
 
         try {
             const res = await plugin.setVariables(pluginName, variableMap)
-            console.log(res);
         } catch (error) {
             console.log(error);
         }

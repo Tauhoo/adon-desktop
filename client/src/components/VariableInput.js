@@ -73,7 +73,7 @@ function getFloatRangeFromType(type) {
     switch (type) {
         case VariableType.Float32:
         case VariableType.Float64:
-            return [3.4E+38, 1.2E-38]
+            return [3.4e+38, -3.4e+38]
         default:
             return [0, 0]
     }
