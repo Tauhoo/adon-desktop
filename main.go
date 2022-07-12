@@ -36,7 +36,7 @@ func main() {
 	window, err := astilectronInstance.NewWindow(conf.ClientLocation, &astilectron.WindowOptions{
 		Center: astikit.BoolPtr(true),
 		Height: astikit.IntPtr(600),
-		Width:  astikit.IntPtr(600),
+		Width:  astikit.IntPtr(1000),
 	})
 	if err != nil {
 		panic(err)
