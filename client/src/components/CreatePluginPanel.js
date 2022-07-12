@@ -82,6 +82,11 @@ function CreatePluginPanel({ onBuildSucess }) {
             return setWarning("project is not selected")
         }
 
+        const pluginNameList = await plugin.getPluginNameList()
+        if (pluginNameList.data.includes(name + ".so")) {
+            return setWarning("plugin name " + name + " already exist")
+        }
+
         setWarning(null)
         setIsBuilding(true)
 
