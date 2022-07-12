@@ -53,3 +53,9 @@ New plugin show at the left
 <img src="readme-assets/plugin-menu.png" width="200px">
 
 # Road map
+In the future, Adon has plans to improve. The list below are the features.
+- [ ] Go struct support.
+- [ ] Create new plugin from git repo.
+- [ ] More type of input such as option input.
+- [ ] Variable saving system.
+- [ ] Function searching
