@@ -1,7 +1,6 @@
 package gocli
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
@@ -30,20 +29,8 @@ func GetGOPATH(binPath string) (string, errors.Error) {
 	}
 }
 
-func GetRealPath() (string, errors.Error) {
-	home := command.GetUserHomeDir()
-	bash := "source %s/.profile; source %s/.bash_profile; source %s/.zshrc; echo $PATH"
-	bash = fmt.Sprintf(bash, home, home, home)
-	result, err := command.Run("bash", []string{"-c", bash})
-	if err != nil {
-		logs.InfoLogger.Printf("find path fail - error: %#v\n", err)
-		return "", err
-	}
-	return strings.Trim(result, " \n"), nil
-}
-
 func GetAllGoBin() ([]string, errors.Error) {
-	result, err := GetRealPath()
+	result, err := command.GetRealPath()
 	if err != nil {
 		return nil, err
 	}
@@ -53,16 +40,24 @@ func GetAllGoBin() ([]string, errors.Error) {
 	}
 
 	binaries := []string{}
+	commands := []string{"go", "go1.18.3"}
 
-	if binPath, err := exec.LookPath("go"); err != nil {
-		logs.ErrorLogger.Printf("look for go fail - error: %#v", err)
-	} else {
-		binaries = append(binaries, binPath)
-	}
+	for _, cmd := range commands {
+		binPath, rawerr := exec.LookPath(cmd)
+		if rawerr != nil {
+			logs.ErrorLogger.Printf("look for %s fail - error: %#v", cmd, rawerr)
+		}
 
-	if binPath, err := exec.LookPath("go1.18.3"); err != nil {
-		logs.ErrorLogger.Printf("look for go1.18.3 fail - error: %#v", err)
-	} else {
+		version, err := GetGOVERSION(binPath)
+		if err != nil {
+			logs.ErrorLogger.Printf("get go version from bin fail - binary: %s", cmd)
+			continue
+		}
+
+		if version != "go1.18.3" {
+			continue
+		}
+
 		binaries = append(binaries, binPath)
 	}
 

@@ -6,8 +6,10 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	"github.com/Tauhoo/adon-desktop/internal/errors"
+	"github.com/Tauhoo/adon-desktop/internal/logs"
 )
 
 func RunWithDirectory(name string, args []string, directory string) (string, errors.Error) {
@@ -50,4 +52,36 @@ func GetUserHomeDir() string {
 		return home
 	}
 	return os.Getenv("HOME")
+}
+
+var sourceFiles = []string{
+	".profile",
+	".bash_login",
+	".bash_profile",
+	".bashrc",
+	".zshrc",
+}
+
+func getSourceCommand() string {
+	home := GetUserHomeDir()
+	command := "source "
+	for _, file := range sourceFiles {
+		bash := fmt.Sprintf("%s/%s > /dev/null; ", home, file)
+		command += bash
+	}
+	command += "echo $PATH"
+	return command
+}
+
+func GetRealPath() (string, errors.Error) {
+	if runtime.GOOS == "darwin" {
+		bash := getSourceCommand()
+		result, err := Run("bash", []string{"-c", bash})
+		if err != nil {
+			logs.InfoLogger.Printf("find path fail - error: %#v\n", err)
+			return "", err
+		}
+		return strings.Trim(result, " \n"), nil
+	}
+	return os.Getenv("PATH"), nil
 }

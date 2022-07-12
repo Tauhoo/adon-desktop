@@ -117,27 +117,7 @@ func (s service) LoadAllPlugin() {
 }
 
 func (s service) GetAllGoBinPath() ([]string, errors.Error) {
-	bins, err := gocli.GetAllGoBin()
-	if err != nil {
-		return nil, err
-	}
-
-	result := []string{}
-	for _, bin := range bins {
-		version, err := gocli.GetGOVERSION(bin)
-		if err != nil {
-			logs.ErrorLogger.Printf("get go version from bin fail - binary: %s", bin)
-			continue
-		}
-
-		if version != "go1.18.3" {
-			continue
-		}
-
-		result = append(result, bin)
-	}
-
-	return result, nil
+	return gocli.GetAllGoBin()
 }
 
 func (s service) DeletePlugin(name string) {
