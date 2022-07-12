@@ -62,26 +62,55 @@ var sourceFiles = []string{
 	".zshrc",
 }
 
-func getSourceCommand() string {
-	home := GetUserHomeDir()
-	command := ""
-	for _, file := range sourceFiles {
-		bash := fmt.Sprintf("source %s/%s > /dev/null; ", home, file)
-		command += bash
+func GetRealEnv() (map[string]string, errors.Error) {
+	args := []string{
+		"-ilc",
+		`echo -n "_SHELL_ENV_DELIMITER_"; env; echo -n "_SHELL_ENV_DELIMITER_"; exit`,
 	}
-	command += "echo $PATH"
-	return command
+
+	rawenv, err := Run(os.Getenv("SHELL"), args)
+	if err != nil {
+		logs.InfoLogger.Printf("find path fail - error: %#v\n", err)
+		return nil, err
+	}
+
+	envEntries := strings.Split(rawenv, "\n")
+
+	noneEmptyEnvEntries := []string{}
+
+	for _, envEntry := range envEntries {
+		if envEntry != "" {
+			noneEmptyEnvEntries = append(noneEmptyEnvEntries, envEntry)
+		}
+	}
+
+	result := map[string]string{}
+	for _, noneEmptyEnvEntry := range noneEmptyEnvEntries {
+		envKeyValue := strings.Split(noneEmptyEnvEntry, "=")
+		if len(envKeyValue) < 2 {
+			continue
+		}
+		valueList := []string{}
+		for i := 1; i < len(envKeyValue); i++ {
+			valueList = append(valueList, envKeyValue[i])
+		}
+		result[envKeyValue[0]] = strings.Join(valueList, "=")
+	}
+
+	return result, nil
 }
 
 func GetRealPath() (string, errors.Error) {
-	if runtime.GOOS == "darwin" {
-		bash := getSourceCommand()
-		result, err := Run("bash", []string{"-c", bash})
+	if runtime.GOOS != "window" {
+		env, err := GetRealEnv()
 		if err != nil {
-			logs.InfoLogger.Printf("find path fail - error: %#v\n", err)
 			return "", err
 		}
-		return strings.Trim(result, " \n"), nil
+		path, ok := env["PATH"]
+		if ok {
+			return path, nil
+		}
+		return os.Getenv("PATH"), nil
 	}
 	return os.Getenv("PATH"), nil
 }
