@@ -18,11 +18,10 @@ out/app: out/html
 	go1.18.3 mod tidy
 	astilectron-bundler
 	./build.sh
-	rm -rf temp
-	rm bind_*
-	rm windows.syso
 
 all: out/app
 
 clear: out
 	rm -rf out
+	rm -rf temp
+	rm bind_*

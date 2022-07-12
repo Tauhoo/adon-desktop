@@ -1,5 +1,5 @@
 {
-  "app_name": "adon",
+  "app_name": "Adon",
   "icon_path_darwin": "resources/logo.icns",
   "icon_path_linux": "resources/logo.png",
   "icon_path_windows": "resources/logo.ico",
@@ -28,22 +28,6 @@
     },
     {
       "os": "linux",
-      "arch": "arm64"
-    },
-    {
-      "os": "windows",
-      "arch": "386"
-    },
-    {
-      "os": "windows",
-      "arch": "amd64"
-    },
-    {
-      "os": "windows",
-      "arch": "arm"
-    },
-    {
-      "os": "windows",
       "arch": "arm64"
     }
   ]

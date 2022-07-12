@@ -17,11 +17,9 @@ for f in $appDir/linux-*;
 do
    cp -r resources $f
    cp -r $htmlDir $f
-done
 
-# set up for window
-for f in $appDir/windows-*;
-do
-   cp -r resources $f
-   cp -r $htmlDir $f
+   cp -r $f $appDir/Adon
+   rm -rf $f/*
+   mv $appDir/Adon $f
+
 done
