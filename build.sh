@@ -21,5 +21,4 @@ do
    cp -r $f $appDir/Adon
    rm -rf $f/*
    mv $appDir/Adon $f
-
 done

@@ -1,3 +1,5 @@
+github.com/Tauhoo/adon v0.0.0-20220707143014-616b7c9712a3 h1:Bf0nVM4/VkyagMcqGp3ARlCBOzvPgz9AjkYlS+VkxmA=
+github.com/Tauhoo/adon v0.0.0-20220707143014-616b7c9712a3/go.mod h1:wtHugO5vKMQcvJPimTk+AeZ+SR7TFsB0d2whYUdTr+c=
 github.com/asticode/go-astikit v0.29.1 h1:w27sLYXK84mDwArf/Vw1BiD5dfD5PBDB+iHoIcpYq0w=
 github.com/asticode/go-astikit v0.29.1/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
 github.com/asticode/go-astilectron v0.29.0 h1:oeceXo55BwcOWUMF/9FHfURBCORt7tgMwh7zeYyFGj0=
