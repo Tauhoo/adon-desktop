@@ -64,9 +64,9 @@ var sourceFiles = []string{
 
 func getSourceCommand() string {
 	home := GetUserHomeDir()
-	command := "source "
+	command := ""
 	for _, file := range sourceFiles {
-		bash := fmt.Sprintf("%s/%s > /dev/null; ", home, file)
+		bash := fmt.Sprintf("source %s/%s > /dev/null; ", home, file)
 		command += bash
 	}
 	command += "echo $PATH"

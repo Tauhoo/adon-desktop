@@ -35,6 +35,8 @@ func GetAllGoBin() ([]string, errors.Error) {
 		return nil, err
 	}
 
+	logs.InfoLogger.Printf("real path - error: %s", result)
+
 	if err := os.Setenv("PATH", result); err != nil {
 		return nil, errors.New(SetPATHEnvFailCode, err.Error())
 	}
