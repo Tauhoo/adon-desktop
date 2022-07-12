@@ -41,6 +41,7 @@ function CreatePluginPanel({ onBuildSucess }) {
             const result = await plugin.getAllGoBinPath()
             const choices = result.data.map(value => ({ label: value, value }))
             setGoBinPathChoices(choices)
+            if (choices.length > 0) setGoBinPath(choices[0].value)
         } catch (error) {
             console.log(error);
         }
@@ -101,6 +102,7 @@ function CreatePluginPanel({ onBuildSucess }) {
             placeholder="Select Go binary"
             style={{ width: '100%' }}
             options={goBinPathChoices}
+            value={goBinPath}
             onChange={(value) => setGoBinPath(value ? value[0] : null)}
         />
         <FolderSelectorContainer>
